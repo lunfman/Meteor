@@ -23,17 +23,3 @@ def get_command(search):
         command_value = split_by_command_last[0]
         print(command_value)
         return command_value
-
-# get_task function accepts string as an argument and extracting task value from the input
-
-
-def get_task(search):
-    task = search.split('<')
-    if len(task[0]) > 0:
-        return task[0]
-    else:
-        print('else')
-        task = task[1].split('>')
-        print(task)
-        clean_task = task[1].strip()
-        return clean_task

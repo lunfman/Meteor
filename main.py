@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from test import get_task, get_command
+from terminal import get_command
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mytodo.db"
@@ -58,8 +58,6 @@ def completed():
     completed_task.completed = True
     # saving
     db.session.commit()
-
-    # checking if redirected from category menu (main page)
     return return_back()
 
 
@@ -73,8 +71,6 @@ def delete():
     db.session.delete(task_to_delete)
     # saving
     db.session.commit()
-    # getting category from jinja
-    # if from category section redirect back to this category
     return return_back()
 
 
@@ -84,7 +80,6 @@ def undo():
     undo_task = Tasks.query.get(task_id)
     undo_task.completed = False
     db.session.commit()
-    # if from category section redirect back to this category
     return return_back()
 
 
