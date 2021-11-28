@@ -28,6 +28,15 @@ def get_categories():
     return unique_list
 
 
+def return_back():
+    # return back function redirects to main page or to category page
+    # checking if redirected from category menu (main page)
+    # if task completed button pressed from category menu return to this category
+    if request.args.get('category') is not None:
+        return redirect(url_for('show_category', name=request.args.get('category')))
+    return redirect(url_for('home_page'))
+
+
 @app.route('/')
 def home_page():
     todo_list = {}
@@ -51,11 +60,7 @@ def completed():
     db.session.commit()
 
     # checking if redirected from category menu (main page)
-    # if task completed button pressed from category menu return to this category
-    if request.args.get('category') is not None:
-        return redirect(url_for('show_category', name=request.args.get('category')))
-
-    return redirect(url_for('home_page'))
+    return return_back()
 
 
 @app.route('/delete')
@@ -70,9 +75,7 @@ def delete():
     db.session.commit()
     # getting category from jinja
     # if from category section redirect back to this category
-    if request.args.get('category') is not None:
-        return redirect(url_for('show_category', name=request.args.get('category')))
-    return redirect(url_for('home_page'))
+    return return_back()
 
 
 @app.route('/undo')
@@ -82,9 +85,7 @@ def undo():
     undo_task.completed = False
     db.session.commit()
     # if from category section redirect back to this category
-    if request.args.get('category') is not None:
-        return redirect(url_for('show_category', name=request.args.get('category')))
-    return redirect(url_for('home_page'))
+    return return_back()
 
 
 @app.route('/terminal', methods=['POST'])
