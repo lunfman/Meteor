@@ -66,6 +66,12 @@ def completed():
     return return_back()
 
 
+@app.route('/undo')
+def undo():
+    is_task_completed(False)
+    return return_back()
+
+
 @app.route('/delete')
 def delete():
     # getting id from jinja template
@@ -76,12 +82,6 @@ def delete():
     db.session.delete(task_to_delete)
     # saving
     db.session.commit()
-    return return_back()
-
-
-@app.route('/undo')
-def undo():
-    is_task_completed(False)
     return return_back()
 
 
