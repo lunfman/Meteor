@@ -98,10 +98,11 @@ def terminal():
             return redirect(url_for('home_page'))
 
         elif 'Open' in check_input:
-            if len(users_input.split()) < 2:
-                return redirect(url_for('home_page'))
-            cat_name = users_input.split()[1]
-            return redirect(url_for('show_category', name=cat_name))
+            # open -> cat => should be equal to 2 this command can not be combined with others
+            if len(users_input.split()) == 2:
+                cat_name = users_input.split()[1]
+                return redirect(url_for('show_category', name=cat_name))
+            return redirect(url_for('home_page'))
 
         elif 'Rename' in check_input:
             # rename category_name new_name
@@ -149,10 +150,7 @@ def terminal():
 
 @app.route('/category/<name>')
 def show_category(name):
-    print(name)
-    print(name.capitalize())
     current_category_todo = Tasks.query.filter_by(category=name).all()
-    print(current_category_todo)
     return render_template('category.html', category_name=name, todo_list=current_category_todo)
 
 
