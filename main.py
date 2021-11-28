@@ -91,11 +91,7 @@ def terminal():
     # check_input can be named as check_for_command
     # it check for a command in the terminal if command exist it will check all possible commands
     # else it will just add to current active category
-
-    # TODO as if can be used get_command(user_input) if command do not exist return None
-    print(get_command(users_input))
     check_input = get_command(users_input)
-    print(check_input)
     if len(check_input) > 0:
         # if category word in terminal bar then user created or added to this category something
         if 'Main' in check_input:
@@ -106,8 +102,7 @@ def terminal():
                 return redirect(url_for('home_page'))
             cat_name = users_input.split()[1]
             return redirect(url_for('show_category', name=cat_name))
-        # if args get category name it means post request went from category folder and if nothing specified the task saved
-        # to this category
+
         elif 'Rename' in check_input:
             # rename category_name new_name
             check_input = users_input.split()
@@ -125,8 +120,10 @@ def terminal():
             for task in tasks_with_category:
                 task.category = category_new_name
                 db.session.commit()
-
+            if request.args.get('category') is not None:
+                return redirect(url_for('show_category', name=category_new_name))
             return redirect(url_for('home_page'))
+
         else:
             # in the future it will be help menu
             return redirect(url_for('home_page'))
