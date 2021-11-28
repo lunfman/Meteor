@@ -1,13 +1,11 @@
-# search = '<test open_cat> flat'
-# search = 'Open Hes'
 from flask import Flask, render_template, request, redirect, url_for
-# get command function looking for commands in the users input and return list of commands
-# now list is useless but soon when i decide to add more complex logic it will be handy
 
+# now list is useless but soon when i decide to add more complex logic it will be handy
 commands = ['Open', 'Rename', 'Main']
 
 
 def get_command(search):
+    # get command function looking for commands in the users input and return list of commands
     found_commands = []
     for command in search.split():
         if command in commands:

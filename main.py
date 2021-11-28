@@ -27,7 +27,7 @@ def get_categories():
         unique_dict = set(categories)
         unique_list = list(unique_dict)
         return unique_list
-
+    # except if db do not exists
     except:
         db.create_all()
         return []
