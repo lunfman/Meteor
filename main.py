@@ -105,24 +105,23 @@ def terminal():
             return redirect(url_for('home_page'))
 
         elif 'Rename' in check_input:
-            # rename category_name new_name
+            # rename category_name new_name -> Rename old_name new_name
             check_input = users_input.split()
-            if len(users_input) < 3:
+            if len(users_input.split()) == 3:
+                category_rename = check_input[1]
+                category_new_name = check_input[2]
+                print(category_rename)
+                print(category_new_name)
+                # getting all tasks from db related to old category
+                tasks_with_category = Tasks.query.filter_by(category=category_rename).all()
+                print(tasks_with_category)
+                # assigning an new category name to all task from db
+                for task in tasks_with_category:
+                    task.category = category_new_name
+                    db.session.commit()
+                if request.args.get('category') is not None:
+                    return redirect(url_for('show_category', name=category_new_name))
                 return redirect(url_for('home_page'))
-
-            category_rename = check_input[1]
-            category_new_name = check_input[2]
-            print(category_rename)
-            print(category_new_name)
-            # getting all tasks from db related to old category
-            tasks_with_category = Tasks.query.filter_by(category=category_rename).all()
-            print(tasks_with_category)
-            # assigning an new category name to all task from db
-            for task in tasks_with_category:
-                task.category = category_new_name
-                db.session.commit()
-            if request.args.get('category') is not None:
-                return redirect(url_for('show_category', name=category_new_name))
             return redirect(url_for('home_page'))
 
         else:
