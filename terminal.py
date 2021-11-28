@@ -15,11 +15,8 @@ def get_command(search):
     else:
         # getting command value
         command_value = split_by_command[1]
-        print(command_value)
         # split '>' to get rid of '>'
         split_by_command_last = command_value.split('>')
-        print(split_by_command_last)
         # getting cleaned command value and returning it
         command_value = split_by_command_last[0]
-        print(command_value)
         return command_value

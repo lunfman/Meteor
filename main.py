@@ -88,31 +88,19 @@ def undo():
 @app.route('/terminal', methods=['POST'])
 def terminal():
     users_input = request.form.get('add')
-    print(users_input)
     # check_input can be named as check_for_command
     # it check for a command in the terminal if command exist it will check all possible commands
     # else it will just add to current active category
 
     # TODO as if can be used get_command(user_input) if command do not exist return None
+    print(get_command(users_input))
     check_input = get_command(users_input).split()
     print(check_input)
     if len(check_input) > 0:
         # if category word in terminal bar then user created or added to this category something
         if 'main' in check_input:
             return redirect(url_for('home_page'))
-        # TODO category looks useless better create in category a bunch of elements s0 remove it pls
-        # elif 'category' in check_input:
-        #     # value = create_categpry this will check for task name and category name and return it
-        #     value = create_category(check_input)
-        #     print(value)
-        #     # creating row and save to db
-        #     task = Tasks(task=value[1], category=value[0])
-        #     db.session.add(task)
-        #     db.session.commit()
-        #     return redirect(url_for('home_page'))
-        # open_cat key word will open category if it is not exist it will be also opend but will be empy
-        # or user can open the category and after add from there to this category without specifying category name
-        # <open_cate shopping> and then type what to buy looks like the best option
+
         elif 'open_cat' in check_input:
             if len(check_input) < 2:
                 return redirect(url_for('home_page'))
