@@ -94,23 +94,24 @@ def terminal():
 
     # TODO as if can be used get_command(user_input) if command do not exist return None
     print(get_command(users_input))
-    check_input = get_command(users_input).split()
+    check_input = get_command(users_input)
     print(check_input)
     if len(check_input) > 0:
         # if category word in terminal bar then user created or added to this category something
-        if 'main' in check_input:
+        if 'Main' in check_input:
             return redirect(url_for('home_page'))
 
-        elif 'open_cat' in check_input:
-            if len(check_input) < 2:
+        elif 'Open' in check_input:
+            if len(users_input.split()) < 2:
                 return redirect(url_for('home_page'))
-            cat_name = check_input[1]
+            cat_name = users_input.split()[1]
             return redirect(url_for('show_category', name=cat_name))
         # if args get category name it means post request went from category folder and if nothing specified the task saved
         # to this category
-        elif 'rename' in check_input:
+        elif 'Rename' in check_input:
             # rename category_name new_name
-            if len(check_input) < 3:
+            check_input = users_input.split()
+            if len(users_input) < 3:
                 return redirect(url_for('home_page'))
 
             category_rename = check_input[1]
