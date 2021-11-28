@@ -21,11 +21,16 @@ class Tasks(db.Model):
 def get_categories():
     # not really efficient....
     categories = []
-    for category in db.session.query(Tasks).distinct():
-        categories.append(category.category)
-    unique_dict = set(categories)
-    unique_list = list(unique_dict)
-    return unique_list
+    try:
+        for category in db.session.query(Tasks).distinct():
+            categories.append(category.category)
+        unique_dict = set(categories)
+        unique_list = list(unique_dict)
+        return unique_list
+
+    except:
+        db.create_all()
+        return []
 
 
 def return_back():

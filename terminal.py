@@ -30,11 +30,8 @@ def rename_command(users_input, db, tasks):
     if len(users_input.split()) == 3:
         category_rename = check_input[1]
         category_new_name = check_input[2]
-        print(category_rename)
-        print(category_new_name)
         # getting all tasks from db related to old category
         tasks_with_category = tasks.query.filter_by(category=category_rename).all()
-        print(tasks_with_category)
         # assigning an new category name to all task from db
         for task in tasks_with_category:
             task.category = category_new_name
