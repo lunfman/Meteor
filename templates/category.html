@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TODO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.13.0/css/all.css"
+      integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V"
+      crossorigin="anonymous"
+    />
+
+  </head>
+  <body>
+    <!-- add item section -->
+    <section class="add-item">
+
+      <div class='container-fluid'>
+      <form method="post" action="{{url_for('terminal', category=category_name)}}">
+        <div class="input-group-lg">
+          <input type='text' class="form-control todo-input" placeholder="To do..." name="add">
+        </div>
+      </form>
+      </div>
+    </section>
+
+  <!-- list of to dos section -->
+  <section class="todo-list">
+    <div class="container-fluid">
+
+      <div class="row">
+
+          <h2>{{category_name}}</h2>
+          {% for todo in todo_list %}
+            {% if not todo.completed %}
+              <div class="col-9">
+                <a data-bs-toggle="collapse" href="#task{{todo.id}}" role="button" aria-expanded="false" aria-controls="task{{todo.id}}">
+                  {{todo.task}}</a>
+              </div>
+
+              <div class="col-2">
+                <p>Today</p>
+              </div>
+
+        <div class="col-1 icon-links">
+                <a class="but-link" href="{{url_for('completed', id=todo.id, category=category_name)}}"><i class="fas fa-check"></i></a>
+                <a class="but-link" href="{{url_for('delete', id=todo.id, category=category_name)}}"><i class="fas fa-trash-alt"></i></a>
+              </div>
+
+        <div class="collapse" id="task{{todo.id}}">
+                <div class="card card-body">
+                  Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+      </div>
+
+  </section>
+  <!-- completed section -->
+  <section class="completed">
+    <div class="container-fluid">
+
+      <div class="open-completed">
+        <a data-bs-toggle="collapse" href="#collapseCompleted" role="button" aria-expanded="false" aria-controls="collapseCompleted">
+          Show completed</a>
+      </div>
+      <div class="collapse" id="collapseCompleted">
+      <div class="row">
+              {% for todo in todo_list %}
+                {% if todo.completed %}
+              <div class="col-10 completed-text">
+                <p><del>{{todo.task}}</del></p>
+              </div>
+              <div class="col-2 icon-links">
+                <a class="but-link" href="{{url_for('undo', id=todo.id, category=category_name)}}"><i class="fas fa-undo"></i></a>
+                <a class="but-link" href="{{url_for('delete', id=todo.id, category=category_name)}}"><i class="fas fa-trash-alt"></i></a>
+              </div>
+                {% endif %}
+              {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+  </body>
+</html>

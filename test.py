@@ -1,0 +1,39 @@
+# search = '<test open_cat> flat'
+
+# get command function extracting <command> from user input
+# as an argument function accepts string line
+
+
+def get_command(search):
+    # splitting by the first command char '<'
+    split_by_command = search.split('<')
+    # if length of the split is equal to 1 it means we do not have received a command
+    # or it was written in the wrong way
+    # the function returns empty sting
+    if len(split_by_command) == 1:
+        return ''
+    else:
+        # getting command value
+        command_value = split_by_command[1]
+        print(command_value)
+        # split '>' to get rid of '>'
+        split_by_command_last = command_value.split('>')
+        print(split_by_command_last)
+        # getting cleaned command value and returning it
+        command_value = split_by_command_last[0]
+        print(command_value)
+        return command_value
+
+# get_task function accepts string as an argument and extracting task value from the input
+
+
+def get_task(search):
+    task = search.split('<')
+    if len(task[0]) > 0:
+        return task[0]
+    else:
+        print('else')
+        task = task[1].split('>')
+        print(task)
+        clean_task = task[1].strip()
+        return clean_task

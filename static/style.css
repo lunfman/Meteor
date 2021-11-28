@@ -1,0 +1,40 @@
+/* add section */
+.add-item{
+    padding: 10% 20% 0% 20% ;
+}
+
+/* list of to dos */
+.todo-list{
+    padding: 2% 20%;
+}
+
+.icon-links{
+    text-align: right;
+}
+
+.but-link{
+    padding: 4%;
+    color: black;
+}
+p{
+    font-size: 1.3rem;
+}
+
+/* completed sectin  */
+
+.completed {
+    padding: 4% 20%;
+}
+
+a {
+    font-size: 1.2rem;
+    color:black;
+}
+
+.open-completed{
+    text-align: center;
+}
+
+.completed-text{
+    font-style: deleted;
+}
