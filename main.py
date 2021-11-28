@@ -37,6 +37,18 @@ def return_back():
     return redirect(url_for('home_page'))
 
 
+def is_task_completed(boolean):
+    # function takes boolean as argument using in completed and undo section
+    # getting task id from id arg
+    task_id = request.args.get('id')
+    # looking for the task in db by id
+    completed_task = Tasks.query.get(task_id)
+    # changing tasks completed to true
+    completed_task.completed = boolean
+    # saving
+    db.session.commit()
+
+
 @app.route('/')
 def home_page():
     todo_list = {}
@@ -50,14 +62,7 @@ def home_page():
 
 @app.route('/completed')
 def completed():
-    # getting task id from id arg
-    task_id = request.args.get('id')
-    # looking for the task in db by id
-    completed_task = Tasks.query.get(task_id)
-    # changing tasks completed to true
-    completed_task.completed = True
-    # saving
-    db.session.commit()
+    is_task_completed(True)
     return return_back()
 
 
@@ -76,10 +81,7 @@ def delete():
 
 @app.route('/undo')
 def undo():
-    task_id = request.args.get('id')
-    undo_task = Tasks.query.get(task_id)
-    undo_task.completed = False
-    db.session.commit()
+    is_task_completed(False)
     return return_back()
 
 
