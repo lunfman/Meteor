@@ -19,11 +19,10 @@ class Tasks(db.Model):
 
 
 def get_categories():
+    # not really efficient way ....
     categories = []
-    # ! why user??? task >??
-    for user in db.session.query(Tasks).distinct():
-        categories.append(user.category)
-
+    for category in db.session.query(Tasks).distinct():
+        categories.append(category.category)
     unique_dict = set(categories)
     unique_list = list(unique_dict)
     return unique_list
@@ -32,11 +31,12 @@ def get_categories():
 @app.route('/')
 def home_page():
     todo_list = {}
-    for category in get_categories():
+    categories = get_categories()
+    for category in categories:
         # adding to todo_list dict all tasks related to this category
         todo_list[category] = Tasks.query.filter_by(category=category).all()
     # calling get_categories two times !!! not efficient
-    return render_template('index.html', todo_list=todo_list, categories=get_categories())
+    return render_template('index.html', todo_list=todo_list, categories=categories)
 
 
 @app.route('/completed')
