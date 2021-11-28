@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from terminal import get_command
+from terminal import get_command, open_command, rename_command
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mytodo.db"
@@ -19,7 +19,7 @@ class Tasks(db.Model):
 
 
 def get_categories():
-    # not really efficient way ....
+    # not really efficient....
     categories = []
     for category in db.session.query(Tasks).distinct():
         categories.append(category.category)
@@ -87,6 +87,7 @@ def undo():
 
 @app.route('/terminal', methods=['POST'])
 def terminal():
+    # move this logic to terminal.py when completed
     users_input = request.form.get('add')
     # check_input can be named as check_for_command
     # it check for a command in the terminal if command exist it will check all possible commands
@@ -98,31 +99,10 @@ def terminal():
             return redirect(url_for('home_page'))
 
         elif 'Open' in check_input:
-            # open -> cat => should be equal to 2 this command can not be combined with others
-            if len(users_input.split()) == 2:
-                cat_name = users_input.split()[1]
-                return redirect(url_for('show_category', name=cat_name))
-            return redirect(url_for('home_page'))
+            return open_command(users_input)
 
         elif 'Rename' in check_input:
-            # rename category_name new_name -> Rename old_name new_name
-            check_input = users_input.split()
-            if len(users_input.split()) == 3:
-                category_rename = check_input[1]
-                category_new_name = check_input[2]
-                print(category_rename)
-                print(category_new_name)
-                # getting all tasks from db related to old category
-                tasks_with_category = Tasks.query.filter_by(category=category_rename).all()
-                print(tasks_with_category)
-                # assigning an new category name to all task from db
-                for task in tasks_with_category:
-                    task.category = category_new_name
-                    db.session.commit()
-                if request.args.get('category') is not None:
-                    return redirect(url_for('show_category', name=category_new_name))
-                return redirect(url_for('home_page'))
-            return redirect(url_for('home_page'))
+            return rename_command(users_input, db, Tasks)
 
         else:
             # in the future it will be help menu
