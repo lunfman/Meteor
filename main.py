@@ -52,9 +52,7 @@ def completed():
 
     # checking if redirected from category menu (main page)
     # if task completed button pressed from category menu return to this category
-    print(request.args.get('category'))
     if request.args.get('category') is not None:
-        print(request.args.get('category'))
         return redirect(url_for('show_category', name=request.args.get('category')))
 
     return redirect(url_for('home_page'))
@@ -64,8 +62,11 @@ def completed():
 def delete():
     # getting id from jinja template
     task_id = request.args.get('id')
+    # looking for the task by id
     task_to_delete = Tasks.query.get(task_id)
+    # deleting task from db
     db.session.delete(task_to_delete)
+    # saving
     db.session.commit()
     # getting category from jinja
     # if from category section redirect back to this category
