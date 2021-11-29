@@ -15,11 +15,10 @@ class Tasks(db.Model):
     completed = db.Column(db.Boolean, default=False, nullable=False)
     category = db.Column(db.String, nullable=False, default='Tasks')
 
-# get_categories function checks for all categories from db and returns a list witch contains unique categories
-
 
 def get_categories():
-    # not really efficient....
+    # get_categories function checks for all categories from db
+    # returns a list witch contains unique categories
     categories = []
     try:
         for category in db.session.query(Tasks).distinct():
@@ -27,24 +26,29 @@ def get_categories():
         unique_dict = set(categories)
         unique_list = list(unique_dict)
         return unique_list
-    # except if db do not exists
+    # except if db do not exists -> first run or deleted
     except:
         db.create_all()
         return []
 
 
 def return_back():
-    # return back function redirects to main page or to category page
-    # checking if redirected from category menu (main page)
-    # if task completed button pressed from category menu return to this category
+    """
+    return_back function checks if request made from category tab ('/category/name') or from main menu ('/')
+    if made from category -> redirect back to this category
+    category value located in templates/category.html
+    href={{url_for('completed', id=todo.id, category=category_name)}}
+    """
     if request.args.get('category') is not None:
+        # url_for takes name as an argument because show_category route = /category/<name>
         return redirect(url_for('show_category', name=request.args.get('category')))
     return redirect(url_for('home_page'))
 
 
 def is_task_completed(boolean):
-    # function takes boolean as argument using in completed and undo section
-    # getting task id from id arg
+    # function takes boolean as argument
+    # function used in completed and undo section
+    # getting task id from id arg -> id arg comes from template check return_back function for more info
     task_id = request.args.get('id')
     # looking for the task in db by id
     completed_task = Tasks.query.get(task_id)
@@ -57,11 +61,12 @@ def is_task_completed(boolean):
 @app.route('/')
 def home_page():
     todo_list = {}
+    # Getting categories names
     categories = get_categories()
     for category in categories:
         # adding to todo_list dict all tasks related to this category
+        # result -> Task : ['Task1', 'Task2']
         todo_list[category] = Tasks.query.filter_by(category=category).all()
-    # calling get_categories two times !!! not efficient
     return render_template('index.html', todo_list=todo_list, categories=categories)
 
 
@@ -94,12 +99,11 @@ def delete():
 def terminal():
     # move this logic to terminal.py when completed
     users_input = request.form.get('add')
-    # check_input can be named as check_for_command
-    # it check for a command in the terminal if command exist it will check all possible commands
-    # else it will just add to current active category
+    # get_command functions ->  return list of commands if found or empty list
     check_input = get_command(users_input)
+    # if get_command returned empty list -> user added task
     if len(check_input) > 0:
-        # if category word in terminal bar then user created or added to this category something
+        # Looking for the command
         if 'Main' in check_input:
             return redirect(url_for('home_page'))
 
@@ -109,23 +113,24 @@ def terminal():
         elif 'Rename' in check_input:
             return rename_command(users_input, db, Tasks)
 
-        else:
-            # in the future it will be help menu
-            return redirect(url_for('home_page'))
-
     else:
+        # else -> user did not typed any command
         # checking for category name if category is none it means task will be added to Tasks section
         # Task is default name if task create without category name
         if request.args.get('category') is not None:
             print('adding to')
             print(request.args.get('category'))
+            # Creating a new Task with category name
             task = Tasks(task=request.form.get('add'), category=request.args.get('category'))
+            # adding new Task to db
             db.session.add(task)
+            # save
             db.session.commit()
+            # redirecting back to the category from which request came
             return redirect(url_for('show_category', name=request.args.get('category')))
 
         else:
-            # if all others are missed = main page and just add the new task
+            # save task to Tasks category -> Default
             task = Tasks(task=request.form.get('add'))
             db.session.add(task)
             db.session.commit()
@@ -134,7 +139,9 @@ def terminal():
 
 @app.route('/category/<name>')
 def show_category(name):
+    # looking for tasks in this category
     current_category_todo = Tasks.query.filter_by(category=name).all()
+    # return page with category name and tasks
     return render_template('category.html', category_name=name, todo_list=current_category_todo)
 
 
