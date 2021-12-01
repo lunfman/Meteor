@@ -11,10 +11,17 @@ At the moment to use this app you need to download it from github. And install a
 
 ### How to add task?
 Just type what you want to do to the terminal and hit Enter. After your hit Enter, a new task will be saved to the Tasks category.   
+```
+Task name -> Enter
+```
 **Nb!Tasks is the default category for tasks without a unique category name.**
 
 ### How to add a task to a unique category?
 Open category and then type the task   
+```
+Open "CATEGORY NAME"
+Task Name -> Enter
+```
 Example: Open ‘Category name’ -> Type Task -> Hit Enter
 
 ### How to create a new category and choose a category ?
@@ -26,24 +33,29 @@ If a category does not exist it will be created.
 If you do not add a new task to the category it will not be saved to db.
 
 Example:
-Open ‘Category name’
+```
+Open 'CATEGORY NAME'
+```
 
 ### How to rename a category ?
 
 Use Rename command   
+```
 Rename ‘Current category name’ ‘New category name’
-
+```
 ### What is main menu?
 Main menu is a start menu. The menu you see every time when you start using the app. Main menu shows all categories and tasks related to the categories.
 
 ### How to move to the main menu from another category?
-Just type Main in terminal
+```
+Main
+```
 
 ## Roadmap
 
 ### Planning to add next features
 
-* Opportunity to create an new category and add many tasks in one command
+* Feature to create an new category and add many tasks in one command
 * Add deadlines to the tasks
 * Show tasks sorted by date 
 * Opportunity to add many tasks in one command 
@@ -51,6 +63,7 @@ Just type Main in terminal
 * Add authentication 
 * Add users preferences settings 
 * Create help menu inside the app
+* Use Js to highlight commands
 
 
 
