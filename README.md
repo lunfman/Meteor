@@ -1,5 +1,6 @@
 # ToDoList -Fast and minimal to do application
 This application allows users to create task lists via terminal by using built in commands. Application was built with the idea of being fast and minimal.
+![AddTask](https://user-images.githubusercontent.com/89738691/144208608-077b6639-bd9b-40b1-8f46-55b1561d0ffc.gif)
 
 ## Installation
 At the moment to use this app you need to download it from github. And install all dependencies. 
