@@ -22,7 +22,7 @@ def get_categories():
     categories = []
     try:
         for category in db.session.query(Tasks).distinct():
-            categories.append(category.category)
+            categories.append(category.category)    
         unique_dict = set(categories)
         unique_list = list(unique_dict)
         return unique_list
