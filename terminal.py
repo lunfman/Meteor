@@ -1,7 +1,9 @@
+from os import name
 from flask import request, redirect, url_for
 
+
 # now list is useless but soon when i decide to add more complex logic it will be handy
-commands = ['Open', 'Rename', 'Main']
+commands = ['Open', 'Rename', 'Main', 'Create', 'Add']
 
 
 def get_command(search):
@@ -52,3 +54,28 @@ def rename_command(users_input, db, tasks):
             return redirect(url_for('show_category', name=category_new_name))
         return redirect(url_for('home_page'))
     return redirect(url_for('home_page'))
+
+def create_category_add_many(users_input, db, Tasks):
+    
+    # create_category_add_many takes 3 arguments: 
+    #   user_input - > input from terminal
+    #   db -> working db
+    #   Tasks -> Module for createing tasks
+
+    # Create 'Category Name' Add 'Task1', 'Task2', ETC
+    # Extracting category_name from users input -> Split to separate all elements
+    # after this method category has index of 1 -> choose this element -> category extracted
+    category_name = users_input.split()[1]
+    # Why changeing Add to ','? Allows to simplify work  after split method 
+    # and not working with nested lists
+    # After doing a split to separate parts of the string and start list from index 1
+    # in this case Create Name has index 0
+    tasks = users_input.replace('Add', ',').split(',')[1:]
+    # running a loop for every task in tasks and adding new task to db.seession after loop ends
+    # save session and redirect to created category
+    for task in tasks:
+        new_task = Tasks(task=task, category =category_name)
+        db.session.add(new_task)
+    db.session.commit()
+
+    return redirect(url_for('show_category', name=category_name))

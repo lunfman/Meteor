@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from terminal import get_command, open_command, rename_command
+from terminal import create_category_add_many, get_command, open_command, rename_command
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mytodo.db"
@@ -112,6 +112,9 @@ def terminal():
 
         elif 'Rename' in check_input:
             return rename_command(users_input, db, Tasks)
+        
+        elif 'Create' and 'Add' in check_input:
+            return create_category_add_many(users_input, db, Tasks)
 
     else:
         # else -> user did not typed any command
