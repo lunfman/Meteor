@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from terminal import create_category_add_many, get_command, open_command, rename_command
+from terminal import create_category_add_many, get_command, open_command, rename_command, add_deadline
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mytodo.db"
@@ -8,12 +8,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
+# after create a relation with category!
 class Tasks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(250), nullable=False)
     completed = db.Column(db.Boolean, default=False, nullable=False)
     category = db.Column(db.String, nullable=False, default='Tasks')
+    date = db.Column(db.String, default='')
+
+# db.create_all()
 
 
 def get_categories():
@@ -115,6 +118,15 @@ def terminal():
         
         elif 'Create' and 'Add' in check_input:
             return create_category_add_many(users_input, db, Tasks)
+
+        elif 'By' in check_input:
+            # getting date
+            date = add_deadline(users_input)
+            # extracting task
+            task = users_input.split('By')[0]
+            print(date)
+            #TODO complete section
+            return redirect(url_for('home_page'))
 
     else:
         # else -> user did not typed any command

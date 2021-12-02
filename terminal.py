@@ -1,9 +1,9 @@
-from os import name
 from flask import request, redirect, url_for
+from date_manage import manageDeadlines
 
-
-# now list is useless but soon when i decide to add more complex logic it will be handy
-commands = ['Open', 'Rename', 'Main', 'Create', 'Add']
+# move to get command after!
+commands = ['Open', 'Rename', 'Main', 'Create', 'Add', 'By', 'In']
+date_validator = manageDeadlines()
 
 
 def get_command(search):
@@ -56,7 +56,7 @@ def rename_command(users_input, db, tasks):
     return redirect(url_for('home_page'))
 
 def create_category_add_many(users_input, db, Tasks):
-    
+
     # create_category_add_many takes 3 arguments: 
     #   user_input - > input from terminal
     #   db -> working db
@@ -65,17 +65,41 @@ def create_category_add_many(users_input, db, Tasks):
     # Create 'Category Name' Add 'Task1', 'Task2', ETC
     # Extracting category_name from users input -> Split to separate all elements
     # after this method category has index of 1 -> choose this element -> category extracted
+    
     category_name = users_input.split()[1]
+
     # Why changeing Add to ','? Allows to simplify work  after split method 
     # and not working with nested lists
     # After doing a split to separate parts of the string and start list from index 1
     # in this case Create Name has index 0
+    
     tasks = users_input.replace('Add', ',').split(',')[1:]
+    
     # running a loop for every task in tasks and adding new task to db.seession after loop ends
     # save session and redirect to created category
+    
     for task in tasks:
         new_task = Tasks(task=task, category =category_name)
         db.session.add(new_task)
     db.session.commit()
 
     return redirect(url_for('show_category', name=category_name))
+
+def add_deadline(users_input):
+    return date_validator.check_date(users_input)
+
+
+def show_current():
+    pass
+
+def add_many():
+    pass
+
+# by_next = add_deadline('By next month')
+# by_num = add_deadline('By 12')
+# by_month = add_deadline('By february')
+# by_month_dat = add_deadline('By 3 March')
+# print(by_next)
+# print(by_num)
+# print(by_month)
+# print(by_month_dat)
