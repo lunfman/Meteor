@@ -124,7 +124,7 @@ class manageDeadlines:
     If not none -> return self.deadline.latest
     '''
 
-    
+
     def __init__(self):
         self.deadline = Deadline()
 
@@ -138,10 +138,11 @@ class manageDeadlines:
         try:
             clear_input =input.split('By')[1].strip().lower()
         except IndexError:
-            # By was not typed
+            # By was not typed -> wrong format
             return None
-        #print(clear_input)
-        # this section validates dates
+
+        # this section validates dates by using deadline class methods
+        # if return is not none going to return latest functions return value
         
         if self.deadline.check_deadline(clear_input):
             return self.deadline.latest
