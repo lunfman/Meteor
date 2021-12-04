@@ -4,7 +4,7 @@ from datetime import date, timedelta
 
 class Deadline:
     '''
-    -Deadline class allow to track deadlines by using different methods
+    -Deadline class allow to track deadlines by using methods
     -Class methods always return a date
 
     -Init creates next vars:
@@ -34,6 +34,8 @@ class Deadline:
         -by_month_and_day takes two arguments month and day -> at the begining this method call by_month method
         and after replaces the day from date received from this method.
     '''
+
+
     def __init__(self):
         self.today = date.today()
         self.cur_year = self.today.year
@@ -99,6 +101,7 @@ class Deadline:
                 return self.latest
         return None
 
+
     def by_month_and_day(self, month, day):
         # this method create date by using month and day
         try:
@@ -111,11 +114,6 @@ class Deadline:
             return None            
 
 
-# deadlines = Deadline()
-# print(deadlines.months['january'])
-# do_by_february = deadlines.by_month('may')
-# print(do_by_february)
-
 class manageDeadlines:
     '''
     This method allows to organize deadline validation in this app
@@ -125,16 +123,24 @@ class manageDeadlines:
 
     If not none -> return self.deadline.latest
     '''
+
+    
     def __init__(self):
         self.deadline = Deadline()
+
+
 
     def check_date(self, input):
         
         # split users_input by 'By' and selecting dead line value and use strip 
         # to get rid of eny spaces and make it lower
-        
-        clear_input =input.split('By')[1].strip().lower()
-        print(clear_input)
+        # and checking if by By was typed
+        try:
+            clear_input =input.split('By')[1].strip().lower()
+        except IndexError:
+            # By was not typed
+            return None
+        #print(clear_input)
         # this section validates dates
         
         if self.deadline.check_deadline(clear_input):
@@ -147,21 +153,11 @@ class manageDeadlines:
             # here we need to do split again because the last method takes two arguments
             # month after split has index 1
             # day has 0
-            month = clear_input.split()[1]
-            day = clear_input.split()[0]
-            if self.deadline.by_month_and_day(month, day):
-                return self.deadline.latest
-
-
-#tests
-# date_manager = manageDeadlines()
-# by_next = date_manager.check_date('By next month')
-# by_num = date_manager.check_date('By 12')
-# by_month = date_manager.check_date('By february')
-# by_month_dat = date_manager.check_date('By 3 March')
-# print(by_next)
-# print(by_num)
-# print(by_month)
-# print(by_month_dat)
-# by_month = date_manager.check_date('By february')
-# print(by_month)
+            try:
+                # if user type 'By 3 march and' we will get date anyway nice
+                month = clear_input.split()[1]
+                day = clear_input.split()[0]
+                if self.deadline.by_month_and_day(month, day):
+                    return self.deadline.latest
+            except:
+                return None

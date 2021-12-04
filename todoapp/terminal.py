@@ -1,6 +1,6 @@
 from flask import request, redirect, url_for
 from date_manage import manageDeadlines
-
+# Create a class here !!!!! what a mess D
 # move to get command after!
 commands = ['Open', 'Rename', 'Main', 'Create', 'Add', 'By', 'In']
 date_validator = manageDeadlines()
