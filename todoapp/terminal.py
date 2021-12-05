@@ -1,18 +1,42 @@
 from flask import request, redirect, url_for
-from date_manage import manageDeadlines
-# Create a class here !!!!! what a mess D
-# move to get command after!
-commands = ['Open', 'Rename', 'Main', 'Create', 'Add', 'By', 'In']
-date_validator = manageDeadlines()
+from .date_manage import manageDeadlines
+from .models import db, Tasks
+
+class Terminal:
 
 
-def get_command(search):
-    # get command function looking for commands in the users input and return list of commands
-    found_commands = []
-    for command in search.split():
-        if command in commands:
-            found_commands.append(command)
-    return found_commands
+    # how it is going to work? Users type something in the terminal. Flask receive message and send it 
+    # to Terminal class
+    # 1) Get commands from the input to validate what user want to do
+    # 2) After do what user wants
+    # 3) Return whatever needed 
+
+
+    def __init__(self):
+        # commands which using our app for interacting with the system/app
+        # strict names
+        self.commands = ['Open', 'Rename', 'Main', 'Create', 'Add', 'By', 'In']
+        # date_validator uses manageDeadlines class form date_manage this module not reusable
+        # made for this app
+        self.date_validator = manageDeadlines()
+        # input is going to store users input  do we need it???
+        self.input = ''
+        # cur_commands is going to store recent commands from using the class
+        self.cur_commands = []
+
+
+    def get_command(self, search):
+        # cleaning cur_commands array before checking
+        # because this list should contain only latest commands
+        self.cur_commands = []
+        # takes one argument -> string -> users input in terminal
+        # get command function looking for commands in the users input and creates a list of commands
+        # why? split to separate values of the input and find commands
+        for command in search.split():
+            if command in self.commands:
+                # appending commands to cur_commands
+                self.cur_commands.append(command)
+        return self
 
 
 def open_command(users_input):
