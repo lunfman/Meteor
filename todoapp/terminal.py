@@ -6,6 +6,7 @@ except:
     from models import Tasks
 
 from flask import redirect, url_for, request
+from werkzeug.wrappers import response
 
 def return_back():
     """
@@ -107,16 +108,7 @@ class Terminal:
         # command_extractor return -> [category name, to dos]
 
         return self.command_extractor('Create', 'Add') 
-        
-        # running a loop for every task in tasks and adding new task to db.seession after loop ends
-        # save session and redirect to created category
-        
-        # for task in tasks:
-        #     new_task = Tasks(task=task, category =category_name)
-        #     db.session.add(new_task)
-        # db.session.commit()
-
-        # return redirect(url_for('show_category', name=category_name))
+    
 
     def add_deadline(self):
         # add deadline method returns all tasks and date
@@ -219,23 +211,14 @@ class Terminal:
         pass
 
 
-# db logic from rename method
-            # tasks_with_category = tasks.query.filter_by(category=category_rename).all()
-
-            # # if tasks_with_category = [] redirect to main page
-            # if len(tasks_with_category) == 0:
-            #     # redirects
-            #     if request.args.get('category') is not None:
-            #         return redirect(url_for('show_category', name=category_new_name))
-            #     return redirect(url_for('home_page'))
-
-            # # changing category name to new one for all tasks related to old category
-            # for task in tasks_with_category:
-            #     task.category = category_new_name
-            #     db.session.commit()
 class terminalLogic():
     '''
     Terminal logic class manages processes after user input was validated 
+    It uses almost the same validation as Terminal.validate_input()
+    Decided to do it here to avoid bad structure
+
+    Init has one argument -> db -> db from main.py where to store data
+    Tasks comes from module.py
     '''
     def __init__(self, db):
         self.terminal = Terminal()
@@ -253,8 +236,10 @@ class terminalLogic():
 
 
     def rename_command_logic(self, old_category, new_category):
+        
         # looking for tasks with this category
         tasks_with_category = Tasks.query.filter_by(category=old_category).all()
+        
         # if tasks_with_category = [] redirect to main page
         if len(tasks_with_category) == 0:
             # redirects
@@ -263,14 +248,27 @@ class terminalLogic():
         # changing category name to new one for all tasks related to old category
         for task in tasks_with_category:
             task.category = new_category
-            self.db.session.commit()
-        return return_back()              
+            self.db.session.commit()    
+        return return_back()     
+
+
+    def create_add_many_logic(self, category, tasks):
+       # running a loop for every task in tasks and adding new task to db.seession after loop ends
+        # save session and redirect to created category
+        
+        for task in tasks:
+            # category = category from func arg
+            new_task = Tasks(task=task, category = category)
+            self.db.session.add(new_task)
+        self.db.session.commit()
+
+        return redirect(url_for('show_category', name=category))
 
     def exe_command(self, input):
         # this method executes commands
         
         # validating users input by using validate_input method of terminal class 
-        # validate can response value / values or none       
+        # validate can return value / values or none       
         self.response = self.terminal.validate_input(input)
         
         # if respose not none continue
@@ -289,6 +287,10 @@ class terminalLogic():
                 old_category_name = self.response[0]
                 new_category_name = self.response[1]
                 return self.rename_command_logic(old_category_name, new_category_name)
+            elif self.terminal.cur_commands == ['Create', 'Add']:
+                category = self.response[0]
+                tasks = self.response[1]
+                return self.create_add_many_logic(category, tasks)
 
             else:
                 # else -> user did not typed any command

@@ -113,22 +113,6 @@ def terminal():
     # move this logic to terminal.py when completed
     users_input = request.form.get('add')
     return terminal_logic.exe_command(users_input)
-    #terminal_respone = terminal_logic.validate_input(users_input)
-        
-    # if terminal_respone:
-    #     if 'Open' in terminal_logic.cur_commands:
-    #         return redirect(url_for('show_category', name = terminal_respone))
-    # if get_command returned empty list -> user added task
-    #if len(check_input) > 0:
-        # Looking for the command
-        # if 'Main' in check_input:
-        #     return redirect(url_for('home_page'))
-
-        # elif 'Open' in check_input:
-        #     return open_command(users_input)
-
-        # elif 'Rename' in check_input:
-        #     return rename_command(users_input, db, Tasks)
         
         # elif 'Create' and 'Add' in check_input:
         #     return create_category_add_many(users_input, db, Tasks)
