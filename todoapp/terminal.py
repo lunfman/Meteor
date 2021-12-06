@@ -6,6 +6,7 @@ except:
     from models import Tasks
 
 from flask import redirect, url_for, request
+
 def return_back():
     """
     return_back function checks if request made from category tab ('/category/name') or from main menu ('/')
@@ -17,7 +18,6 @@ def return_back():
         # url_for takes name as an argument because show_category route = /category/<name>
         return redirect(url_for('show_category', name=request.args.get('category')))
     return redirect(url_for('home_page'))
-
 
 class Terminal:
     
@@ -218,6 +218,7 @@ class Terminal:
     def add_many():
         pass
 
+
 # db logic from rename method
             # tasks_with_category = tasks.query.filter_by(category=category_rename).all()
 
@@ -240,36 +241,61 @@ class terminalLogic():
         self.terminal = Terminal()
         self.db = db
 
+
     def open_command_logic(self, response):
         # method for open command
         return redirect(url_for('show_category', name = response))
+
 
     def main_command_logic(self):
         # Main command -> back home
         return redirect(url_for('home_page'))
 
+
+    def rename_command_logic(self, old_category, new_category):
+        # looking for tasks with this category
+        tasks_with_category = Tasks.query.filter_by(category=old_category).all()
+        # if tasks_with_category = [] redirect to main page
+        if len(tasks_with_category) == 0:
+            # redirects
+            return return_back()
+
+        # changing category name to new one for all tasks related to old category
+        for task in tasks_with_category:
+            task.category = new_category
+            self.db.session.commit()
+        return return_back()              
+
     def exe_command(self, input):
         # this method executes commands
         
-        # validating users input by using validate_input method of terminal class        
+        # validating users input by using validate_input method of terminal class 
+        # validate can response value / values or none       
         self.response = self.terminal.validate_input(input)
         
         # if respose not none continue
         if self.response:
+            print('Checking input')
             # if after validation cur_commands = Open -> Open command used
             # Use Open logic and return
             if self.terminal.cur_commands == ['Open']:
                 return self.open_command_logic(self.response)
             # if Main left in cur_commands Main used! use main command logic    
             elif self.terminal.cur_commands == ['Main']:
+                print('main')
                 return self.main_command_logic()
+            elif self.terminal.cur_commands == ['Rename', 'To']:
+                print('rename section')
+                old_category_name = self.response[0]
+                new_category_name = self.response[1]
+                return self.rename_command_logic(old_category_name, new_category_name)
 
             else:
                 # else -> user did not typed any command
                 # checking for category name if category is none it means task will be added to Tasks section
                 # Task is default name if task create without category name
                 if request.args.get('category') is not None:
-
+                    print('add cat')
                     # Creating a new Task with category name
                     task = Tasks(task=request.form.get('add'), category=request.args.get('category'))
                     # adding new Task to db
@@ -281,7 +307,10 @@ class terminalLogic():
 
                 else:
                 # save task to Tasks category -> Default
+                    print('else section')
                     task = Tasks(task=self.response)
                     self.db.session.add(task)
                     self.db.session.commit()
                     return self.main_command_logic()
+        else:
+            return redirect(url_for('home_page'))

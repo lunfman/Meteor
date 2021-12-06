@@ -97,7 +97,7 @@ class TestTerminal(unittest.TestCase):
         , ['task task task', 'task1 task1 task1'])
 
         self.assertEqual(self.terminal.validate_input('Rename tasks To task1'), ['tasks', 'task1'])
-               
+        self.assertEqual(self.terminal.validate_input('Rename work To w'), ['work', 'w'])       
         # wrong format
         self.assertEqual(self.terminal.validate_input('Rename tasks to task1'), None)
         self.assertEqual(self.terminal.validate_input('rename tasks To task1'), None)

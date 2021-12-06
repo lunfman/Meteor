@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Tasks
-from flask_sqlalchemy import SQLAlchemy
 from terminal import terminalLogic
 
 app = Flask(__name__)
