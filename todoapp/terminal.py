@@ -1,18 +1,37 @@
-from flask import request, redirect, url_for
-from .date_manage import manageDeadlines
-from .models import db, Tasks
+try:
+    from .date_manage import manageDeadlines
+    from .models import Tasks
+except:
+    from date_manage import manageDeadlines
+    from models import Tasks
+
+from flask import redirect, url_for, request
+def return_back():
+    """
+    return_back function checks if request made from category tab ('/category/name') or from main menu ('/')
+    if made from category -> redirect back to this category
+    category value located in templates/category.html
+    href={{url_for('completed', id=todo.id, category=category_name)}}
+    """
+    if request.args.get('category') is not None:
+        # url_for takes name as an argument because show_category route = /category/<name>
+        return redirect(url_for('show_category', name=request.args.get('category')))
+    return redirect(url_for('home_page'))
+
 
 class Terminal:
     
     '''
-    Terminal class allows to manage users inputs from the app
+    Terminal class allows to get users command from the input
+    by using validate_input method
     '''
 
-    # how it is going to work? Users type something in the terminal.
-    #  Flask receive message and send it to Terminal class
-    # 1) Get commands from the input to validate what user want to do
-    # 2) After do what user wants
-    # 3) Return whatever needed 
+    # How it is going to work? 
+    # Users type something in the terminal.
+    # Flask receive message and send it to Terminal class for validation
+    # When validation complete terminal class return value or values
+    # If data was in the wrong format return None
+    # Else return data
 
 
     def __init__(self):
@@ -41,6 +60,11 @@ class Terminal:
         # cleaning cur_commands array before checking
         # because this list should contain only latest commands
         self.cur_commands = []
+
+        # self.input -> = search -> store current search value
+        # get command is the first running method in validation
+        # thats why self.input = search
+        self.input = search
         
         # why? split to separate values of the input and find commands
         for command in search.split():
@@ -50,26 +74,14 @@ class Terminal:
         return self
 
 
-    def open_command(self):
-
+    def open_command(self):   
         # Open -> cat => strict category
-        # if after split method list not greater than 1 it means only Open command
-        # was provided in input filed
-        # if greater using slice method to get category
         
-        # using split
-        clean_input = self.input.split()
-
-        # if statement also validates if input > 1 and command in commands
-        # because Open can be written in lowercase
-        if len(clean_input) > 1 and clean_input[0] in self.commands :
-            
-            # using join with space as seperator to get string 
-            # from the sliced list because method has to return string
-            cat_name = ' '.join(clean_input[1:])
-            
-            return cat_name
-        return None
+        # category [0]-> because command_extractor return a list
+        category = self.command_extractor('Open')[0]
+        
+        # return category as a string
+        return category
 
 
     def rename_command(self):
@@ -77,31 +89,8 @@ class Terminal:
         # -> Rename old category To new category
         # rename has two commands Rename and To
 
-        # Rename task1 To task2 -> now we need to get rid of Rename and To
-        # going to use replace method to replace commands 
-        # Rename replace with 'C' -> C for command
-        # Maybe a better option exists for this operation??!!
-        check_input = self.input.replace('To', 'C').replace('Rename', 'C')
-        
-        # and now split by ',' to get two category names
-        # after this split check_input list should have 3 elements -> '', task1, task2
-        check_input = check_input.split('C')
-       
-        # if checking input equal to 3 -> user provided legit data
-        # Less means bad request and return None
-        if len(check_input) == 3:
-            
-            # if user typed everything right
-            # category to rename has index 1
-            # and also need to do strip to get rid of bad spaces
-            category_rename = check_input[1].strip()
-            
-            # new name of the category has index 2
-            category_new_name = check_input[2].strip()
-
-            # return a list of values for renaming
-            return [category_rename, category_new_name]  
-        return None  
+        # command_extractor return -> ['old cat', 'new_cat']
+        return  self.command_extractor('Rename', 'To')
 
             # redirects
             # check return_back() in main.py for more info
@@ -110,55 +99,124 @@ class Terminal:
         #     return redirect(url_for('home_page'))
         # return redirect(url_for('home_page'))
 
-def create_category_add_many(users_input, db, Tasks):
 
-    # create_category_add_many takes 3 arguments: 
-    #   user_input - > input from terminal
-    #   db -> working db
-    #   Tasks -> Module for createing tasks
+    def create_category_add_many(self):
 
-    # Create 'Category Name' Add 'Task1', 'Task2', ETC
-    # Extracting category_name from users input -> Split to separate all elements
-    # after this method category has index of 1 -> choose this element -> category extracted
+        # Create 'Category Name' Add 'Task1', 'Task2', ETC
+        # method return an list with category name and a list of tasks
+        # command_extractor return -> [category name, to dos]
+
+        return self.command_extractor('Create', 'Add') 
+        
+        # running a loop for every task in tasks and adding new task to db.seession after loop ends
+        # save session and redirect to created category
+        
+        # for task in tasks:
+        #     new_task = Tasks(task=task, category =category_name)
+        #     db.session.add(new_task)
+        # db.session.commit()
+
+        # return redirect(url_for('show_category', name=category_name))
+
+    def add_deadline(self):
+        # add deadline method returns all tasks and date
+        
+        # extracting tasks from the input
+        # index 0 in this scenario everythin before By
+        tasks = self.input.split('By')[0]
+        
+        # creating a tasks list from tasks
+        tasks_list = [task.strip() for task in tasks.split(',')]
+        return [tasks_list, self.date_validator.check_date(self.input)]
+   
+    def command_extractor(self, *args):
+
+        # this method extract commands from self.input by providing commands
+        # which should be removed
+        # if input has complex values like add task1 ,task2, task1 task2
+        # it will return them as a list
+        # otherwise return extracted value
+
+        # example: Create category name Add task1, task2, task3
+        # output: ['category name', ['task1', 'task2', 'task3']]
+
+        # example : Open category name
+        # output: ['category name']
+
+        # extracted is going to store extracted values
+        extracted = []
+        
+        # clean_input used for manipulating the string cause string immutable
+        # and we do not want to manipulate self.input directly !!!!
+        clean_input = self.input
+        
+        #running for loop in args and replace arg value in the string
+        for arg in args:
+            # also validating data here
+            # if arg not in clean_input return None
+
+            # replace arg with !C! to escape problems with users input in the future
+            clean_input = clean_input.replace(arg, '!C!')
+        # creating clean list by split method    
+        clean_list = clean_input.strip().split('!C!')
+        # creating an extracted list
+        for value in clean_list:
+            # if value not equal to empty continue or (empty with spaces this came fro unittesting)
+            if value != '' and value != ' ':
+                # if value do not have ',' seperator just add value to the list
+                if ',' not in value:
+                    extracted.append(value.strip())
+                else:
+                    # if has seperator create a list of values and add to the list
+                    # also strip values to get rid of bad spaces
+                    values_list = [value.strip() for value in value.split(',')]
+                    extracted.append(values_list)
+       
+        # return extracted list
+        return extracted
+
+
+    def validate_input(self, input):
+        # validate_input method validates input from the app
+
+        # getting all commands from input
+        self.get_command(input)
+
+        # making a list from input value via split method
+        input_list = self.input.split()
+
+        # Validating data
+        # Command like Open, Rename, Create, Main always has to be first!
+        if self.cur_commands == ['Open'] and input_list[0] == 'Open':
+            return self.open_command()
+        elif self.cur_commands == ['Rename', 'To'] and input_list[0] == 'Rename':
+            return self.rename_command()
+        elif self.cur_commands == ['Create', 'Add'] and input_list[0] == 'Create':
+            # if the length oft create_category and many less than 2 -> wrong format
+            if len(self.create_category_add_many()) < 2:
+                return None
+            return self.create_category_add_many()
+        elif self.cur_commands == ['By']:
+            return self.add_deadline()
+        elif self.cur_commands == ['Main']:
+            # if Main was used
+            return True
+
+        elif len(self.cur_commands) == 0:
+            # if command not found user created a task!
+            # and validator return input back
+            return input
+
+        else:
+            return None
     
-    category_name = users_input.split()[1]
-
-    # Why changeing Add to ','? Allows to simplify work  after split method 
-    # and not working with nested lists
-    # After doing a split to separate parts of the string and start list from index 1
-    # in this case Create Name has index 0
     
-    tasks = users_input.replace('Add', ',').split(',')[1:]
-    
-    # running a loop for every task in tasks and adding new task to db.seession after loop ends
-    # save session and redirect to created category
-    
-    for task in tasks:
-        new_task = Tasks(task=task, category =category_name)
-        db.session.add(new_task)
-    db.session.commit()
-
-    return redirect(url_for('show_category', name=category_name))
-
-def add_deadline(users_input):
-    return date_validator.check_date(users_input)
+    def show_current():
+        pass
 
 
-def show_current():
-    pass
-
-def add_many():
-    pass
-
-# by_next = add_deadline('By next month')
-# by_num = add_deadline('By 12')
-# by_month = add_deadline('By february')
-# by_month_dat = add_deadline('By 3 March')
-# print(by_next)
-# print(by_num)
-# print(by_month)
-# print(by_month_dat)
-
+    def add_many():
+        pass
 
 # db logic from rename method
             # tasks_with_category = tasks.query.filter_by(category=category_rename).all()
@@ -174,3 +232,56 @@ def add_many():
             # for task in tasks_with_category:
             #     task.category = category_new_name
             #     db.session.commit()
+class terminalLogic():
+    '''
+    Terminal logic class manages processes after user input was validated 
+    '''
+    def __init__(self, db):
+        self.terminal = Terminal()
+        self.db = db
+
+    def open_command_logic(self, response):
+        # method for open command
+        return redirect(url_for('show_category', name = response))
+
+    def main_command_logic(self):
+        # Main command -> back home
+        return redirect(url_for('home_page'))
+
+    def exe_command(self, input):
+        # this method executes commands
+        
+        # validating users input by using validate_input method of terminal class        
+        self.response = self.terminal.validate_input(input)
+        
+        # if respose not none continue
+        if self.response:
+            # if after validation cur_commands = Open -> Open command used
+            # Use Open logic and return
+            if self.terminal.cur_commands == ['Open']:
+                return self.open_command_logic(self.response)
+            # if Main left in cur_commands Main used! use main command logic    
+            elif self.terminal.cur_commands == ['Main']:
+                return self.main_command_logic()
+
+            else:
+                # else -> user did not typed any command
+                # checking for category name if category is none it means task will be added to Tasks section
+                # Task is default name if task create without category name
+                if request.args.get('category') is not None:
+
+                    # Creating a new Task with category name
+                    task = Tasks(task=request.form.get('add'), category=request.args.get('category'))
+                    # adding new Task to db
+                    self.db.session.add(task)
+                    # save
+                    self.db.session.commit()
+                    # redirecting back to the category from which request came
+                    return redirect(url_for('show_category', name=request.args.get('category')))
+
+                else:
+                # save task to Tasks category -> Default
+                    task = Tasks(task=self.response)
+                    self.db.session.add(task)
+                    self.db.session.commit()
+                    return self.main_command_logic()

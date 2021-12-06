@@ -14,20 +14,22 @@ class Deadline:
         latest - stores latest value after method use in the class
 
         dates -> dictionary has next keys: tomorrow, next week, next month  
-        -> every key has a logical date value to every key
+            -> every key has a logical date value to every key
 
-        month_list -> main goal is to use it in  creation of a self.month dict
+        month_list -> main goal is to use it in creation of a self.month dict
 
-        self.motnhs -> dict which is using if user want to complete something By month
+        self.motnhs -> dict which is using if user want 
+            to complete something By month
 
 
     -Methods
 
-        - check_deadlines takes as an argument string. This method checks if the string 
-        in the dates dict if so returns value of the key
+        - check_deadlines takes as an argument string. This method checks
+        if the string in the dates dict if so returns value of the key
 
-        -cur_month_deadline takes as an argument string. after try to convert to string if impossible
-        return none if everythin is okay return a date with the current year, month and provided day
+        -cur_month_deadline takes as an argument string. after try 
+        to convert to string if impossible return none if everythin is okay
+        return a date with the current year, month and provided day
 
         -by_month takes as an argument string if the string in months dict return value of the key
 
@@ -37,9 +39,11 @@ class Deadline:
 
 
     def __init__(self):
+
         self.today = date.today()
         self.cur_year = self.today.year
         self.cur_month = self.today.month
+        
         # stores latest value after method exe
         self.latest = ''
         
@@ -48,9 +52,11 @@ class Deadline:
             'next week': self.today + timedelta(days=7),
             'next month': self.today + timedelta(days=30),
         }
+        
         # month_list allow to create moths dict
         self.month_list = ['january', 'february', 'march', 'april', 
-        'may', 'june', 'july', 'august','september', 'october', 'november', 'december']
+            'may', 'june', 'july', 'august','september', 'october',
+            'november', 'december']
         
        # creating dict from month_list
         self.months = {self.month_list[num]: date(self.cur_year, num + 1, 1)
@@ -136,7 +142,8 @@ class manageDeadlines:
         # to get rid of eny spaces and make it lower
         # and checking if by By was typed
         try:
-            clear_input =input.split('By')[1].strip().lower()
+            clear_input = input.split('By')[1].strip().lower()
+            #self.task = input.split('By')[0].strip().lower()
         except IndexError:
             # By was not typed -> wrong format
             return None

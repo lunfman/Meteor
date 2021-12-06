@@ -1,14 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Tasks
 from flask_sqlalchemy import SQLAlchemy
-from terminal import create_category_add_many, get_command, open_command, rename_command, add_deadline
+from terminal import terminalLogic
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mytodo.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-
+# init terminal class
+terminal_logic = terminalLogic(db)
 # after create a relation with category!
 # class Tasks(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -49,14 +50,20 @@ def return_back():
 
 
 def is_task_completed(boolean):
+
     # function takes boolean as argument
     # function used in completed and undo section
-    # getting task id from id arg -> id arg comes from template check return_back function for more info
+    
+    # getting task id from id arg -> id arg comes from template check 
+    # return_back function for more info
     task_id = request.args.get('id')
+    
     # looking for the task in db by id
     completed_task = Tasks.query.get(task_id)
+    
     # changing tasks completed to true
     completed_task.completed = boolean
+    
     # saving
     db.session.commit()
 
@@ -87,12 +94,16 @@ def undo():
 
 @app.route('/delete')
 def delete():
+
     # getting id from jinja template
     task_id = request.args.get('id')
+    
     # looking for the task by id
     task_to_delete = Tasks.query.get(task_id)
+    
     # deleting task from db
     db.session.delete(task_to_delete)
+    
     # saving
     db.session.commit()
     return return_back()
@@ -102,54 +113,60 @@ def delete():
 def terminal():
     # move this logic to terminal.py when completed
     users_input = request.form.get('add')
-    # get_command functions ->  return list of commands if found or empty list
-    check_input = get_command(users_input)
-    # if get_command returned empty list -> user added task
-    if len(check_input) > 0:
-        # Looking for the command
-        if 'Main' in check_input:
-            return redirect(url_for('home_page'))
-
-        elif 'Open' in check_input:
-            return open_command(users_input)
-
-        elif 'Rename' in check_input:
-            return rename_command(users_input, db, Tasks)
+    return terminal_logic.exe_command(users_input)
+    #terminal_respone = terminal_logic.validate_input(users_input)
         
-        elif 'Create' and 'Add' in check_input:
-            return create_category_add_many(users_input, db, Tasks)
+    # if terminal_respone:
+    #     if 'Open' in terminal_logic.cur_commands:
+    #         return redirect(url_for('show_category', name = terminal_respone))
+    # if get_command returned empty list -> user added task
+    #if len(check_input) > 0:
+        # Looking for the command
+        # if 'Main' in check_input:
+        #     return redirect(url_for('home_page'))
 
-        elif 'By' in check_input:
-            # getting date
-            date = add_deadline(users_input)
+        # elif 'Open' in check_input:
+        #     return open_command(users_input)
+
+        # elif 'Rename' in check_input:
+        #     return rename_command(users_input, db, Tasks)
+        
+        # elif 'Create' and 'Add' in check_input:
+        #     return create_category_add_many(users_input, db, Tasks)
+
+        # elif 'By' in check_input:
+        #     # getting date
+        #     date = add_deadline(users_input)
+            
             # extracting task
-            task = users_input.split('By')[0]
-            print(date)
+            #task = users_input.split('By')[0]
+            #print(date)
             #TODO complete section
-            return redirect(url_for('home_page'))
+            #return redirect(url_for('home_page'))
 
-    else:
-        # else -> user did not typed any command
-        # checking for category name if category is none it means task will be added to Tasks section
-        # Task is default name if task create without category name
-        if request.args.get('category') is not None:
-            print('adding to')
-            print(request.args.get('category'))
-            # Creating a new Task with category name
-            task = Tasks(task=request.form.get('add'), category=request.args.get('category'))
-            # adding new Task to db
-            db.session.add(task)
-            # save
-            db.session.commit()
-            # redirecting back to the category from which request came
-            return redirect(url_for('show_category', name=request.args.get('category')))
 
-        else:
-            # save task to Tasks category -> Default
-            task = Tasks(task=request.form.get('add'))
-            db.session.add(task)
-            db.session.commit()
-            return redirect(url_for('home_page'))
+    # else:
+    #     # else -> user did not typed any command
+    #     # checking for category name if category is none it means task will be added to Tasks section
+    #     # Task is default name if task create without category name
+    #     if request.args.get('category') is not None:
+    #         print('adding to')
+        #     print(request.args.get('category'))
+        #     # Creating a new Task with category name
+        #     task = Tasks(task=request.form.get('add'), category=request.args.get('category'))
+        #     # adding new Task to db
+        #     db.session.add(task)
+        #     # save
+        #     db.session.commit()
+        #     # redirecting back to the category from which request came
+        #     return redirect(url_for('show_category', name=request.args.get('category')))
+
+        # else:
+        #     # save task to Tasks category -> Default
+        #     task = Tasks(task=request.form.get('add'))
+        #     db.session.add(task)
+        #     db.session.commit()
+        #     return redirect(url_for('home_page'))
 
 
 @app.route('/category/<name>')
