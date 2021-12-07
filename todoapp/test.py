@@ -18,7 +18,9 @@ def calculate_deadline(deadline):
 
     if delta == 1:
         return 'tomorrow'
-    elif delta == -1:
-        return 'yesterday'
+    elif delta < 0:
+        return deadline
     else:
         return f'{delta} days'
+
+print(calculate_deadline('2021-12-05'))
