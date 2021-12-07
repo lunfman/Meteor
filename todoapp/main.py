@@ -9,14 +9,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # init terminal class
 terminal_logic = terminalLogic(db)
-# after create a relation with category!
-# class Tasks(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     task = db.Column(db.String(250), nullable=False)
-#     completed = db.Column(db.Boolean, default=False, nullable=False)
-#     category = db.Column(db.String, nullable=False, default='Tasks')
-#     date = db.Column(db.String, default='')
-
 
 
 def get_categories():
@@ -113,43 +105,6 @@ def terminal():
     # move this logic to terminal.py when completed
     users_input = request.form.get('add')
     return terminal_logic.exe_command(users_input)
-        
-        # elif 'Create' and 'Add' in check_input:
-        #     return create_category_add_many(users_input, db, Tasks)
-
-        # elif 'By' in check_input:
-        #     # getting date
-        #     date = add_deadline(users_input)
-            
-            # extracting task
-            #task = users_input.split('By')[0]
-            #print(date)
-            #TODO complete section
-            #return redirect(url_for('home_page'))
-
-
-    # else:
-    #     # else -> user did not typed any command
-    #     # checking for category name if category is none it means task will be added to Tasks section
-    #     # Task is default name if task create without category name
-    #     if request.args.get('category') is not None:
-    #         print('adding to')
-        #     print(request.args.get('category'))
-        #     # Creating a new Task with category name
-        #     task = Tasks(task=request.form.get('add'), category=request.args.get('category'))
-        #     # adding new Task to db
-        #     db.session.add(task)
-        #     # save
-        #     db.session.commit()
-        #     # redirecting back to the category from which request came
-        #     return redirect(url_for('show_category', name=request.args.get('category')))
-
-        # else:
-        #     # save task to Tasks category -> Default
-        #     task = Tasks(task=request.form.get('add'))
-        #     db.session.add(task)
-        #     db.session.commit()
-        #     return redirect(url_for('home_page'))
 
 
 @app.route('/category/<name>')
