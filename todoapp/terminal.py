@@ -5,6 +5,7 @@ except:
     from date_manage import manageDeadlines
     from models import Tasks
 
+from operator import ne
 from flask import redirect, url_for, request
 from werkzeug.wrappers import response
 
@@ -264,6 +265,17 @@ class terminalLogic():
 
         return redirect(url_for('show_category', name=category))
 
+    
+    def add_deadline_logic(self, tasks, date):
+        # iterate through every task and save to db
+        #  and return return_back function
+        for task in tasks:
+            new_task = Tasks(task=task, date=date)
+            self.db.session.add(new_task)
+        self.db.session.commit()
+        return return_back()
+
+
     def exe_command(self, input):
         # this method executes commands
         
@@ -273,17 +285,14 @@ class terminalLogic():
         
         # if respose not none continue
         if self.response:
-            print('Checking input')
             # if after validation cur_commands = Open -> Open command used
             # Use Open logic and return
             if self.terminal.cur_commands == ['Open']:
                 return self.open_command_logic(self.response)
             # if Main left in cur_commands Main used! use main command logic    
             elif self.terminal.cur_commands == ['Main']:
-                print('main')
                 return self.main_command_logic()
             elif self.terminal.cur_commands == ['Rename', 'To']:
-                print('rename section')
                 old_category_name = self.response[0]
                 new_category_name = self.response[1]
                 return self.rename_command_logic(old_category_name, new_category_name)
@@ -291,6 +300,11 @@ class terminalLogic():
                 category = self.response[0]
                 tasks = self.response[1]
                 return self.create_add_many_logic(category, tasks)
+            elif self.terminal.cur_commands == ['By']:
+                # comes from validation return [tasks] and date
+                tasks = self.response[0]
+                date = self.response[1]
+                return self.add_deadline_logic(tasks, date)
 
             else:
                 # else -> user did not typed any command
