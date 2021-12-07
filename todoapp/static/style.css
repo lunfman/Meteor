@@ -38,3 +38,8 @@ a {
 .completed-text{
     font-style: deleted;
 }
+
+/* deadline exp */
+.expired{
+    color: red;
+}

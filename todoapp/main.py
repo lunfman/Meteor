@@ -81,8 +81,8 @@ def calculate_deadline(deadline):
 
     if delta == 1:
         return 'tomorrow'
-    elif delta == -1:
-        return 'yesterday'
+    elif delta < 0:
+        return 'Failed'
     else:
         return f'{delta} days'
 
