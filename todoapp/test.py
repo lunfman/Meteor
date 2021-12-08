@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 def calculate_deadline(deadline):
     
@@ -23,4 +23,8 @@ def calculate_deadline(deadline):
     else:
         return f'{delta} days'
 
-print(calculate_deadline('2021-12-05'))
+#print(calculate_deadline('2021-12-05'))
+
+def in_command(input):
+    deadline = date.today() + timedelta(days=input)
+    print(deadline)

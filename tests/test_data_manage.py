@@ -90,6 +90,16 @@ class TestDeadlinesMethods(unittest.TestCase):
         self.assertEqual(self.manager.check_date('By 3 January'), datetime.date(2022,1,3))
         self.assertEqual(self.manager.check_date('By 10 AugusT'), datetime.date(2022,8,10))
 
+    def test_in_command(self):
+        self.assertEqual(self.manager.deadline.in_command('5'), datetime.date(2021,12,6))
+        self.assertEqual(self.manager.deadline.in_command('32'), datetime.date(2022,1,2))
+        self.assertEqual(self.manager.deadline.in_command('90'), datetime.date(2022,3,1))
+        self.assertEqual(self.manager.deadline.in_command(90), datetime.date(2022,3,1))
+        # wrong data
+        self.assertEqual(self.manager.deadline.in_command(95), None)
+        self.assertEqual(self.manager.deadline.in_command('100'), None)
+        self.assertEqual(self.manager.deadline.in_command('In 100'), None)
+
 class TestDeadlinesMethods_version_2(unittest.TestCase):
     # a few test with this date
     @freeze_time('2021-7-01')

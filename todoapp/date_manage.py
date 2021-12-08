@@ -108,6 +108,26 @@ class Deadline:
         return None
 
 
+    def in_command(self, input):
+        # in_command method return a date after calculateing delta of todays and users desired day
+        # in_command take one argument -> input which should be a integer or str convertable to integer
+        # in command can tak up to 90 if more it will be a mess! In 1000, or in 10000000000 days
+        # 90 looks okay because it is really hard to plan task this way
+        # Try except to check if input is a digit  and not 'In 90' or some kind of
+        try:
+            input = int(input)
+            if input > 90:
+                return None
+            else:
+                deadline = self.today + timedelta(days=input)
+                return deadline
+        except TypeError:
+            return None
+
+        except ValueError:
+            return None
+
+
     def by_month_and_day(self, month, day):
         # this method create date by using month and day
         try:
@@ -117,8 +137,7 @@ class Deadline:
             self.latest = date.replace(day=int(day))
             return self.latest
         except:
-            return None            
-
+            return None
 
 class manageDeadlines:
     '''
