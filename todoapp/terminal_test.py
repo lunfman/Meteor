@@ -34,6 +34,7 @@ class Manager:
         self.terminal = Terminal(commands=self.commands)
         self.db = db
         self.date_validator = manageDeadlines()
+        self.category_name = 'Tasks'
     
     def check_input(self, input):
         # if command found extract command else task was added
@@ -118,5 +119,11 @@ class Manager:
         return return_back()
 
     def show_command_logic(self,response):
-        if response == 'deadlines':
-            pass
+        print(response)
+        if self.category_name is None:
+            return redirect(url_for('home_page'))
+        elif response[0] == 'deadlines':
+            return redirect(url_for('show_deadlines', name=self.category_name, order='test'))
+        else:
+            return redirect(url_for('home_page'))
+        

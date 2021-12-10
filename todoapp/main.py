@@ -146,6 +146,18 @@ def show_category(name):
         todo_list=current_category_todo, get_deadline= calculate_deadline)
 
 
+@app.route('/category/<name>/deadlines')
+def show_deadlines(name):
+    # looking for tasks in this category
+    current_category_todo = (Tasks.query.filter(Tasks.category == name, Tasks.date != '')
+    .order_by(Tasks.date))
+    # return page with category name and tasks
+    # passing calculate_deadline function to get_deadline which will be used
+    # inside of category.html template for fetching deadlines
+    return render_template('category.html', category_name=name, 
+        todo_list=current_category_todo, get_deadline= calculate_deadline)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
