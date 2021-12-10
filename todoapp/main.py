@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Tasks
-from terminal import terminalLogic
+from terminal_test import Manager
 from datetime import date, datetime
 
 app = Flask(__name__)
@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///mytodo.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # init terminal class
-terminal_logic = terminalLogic(db)
+terminal_logic = Manager(db)
 
 def get_categories():
     # get_categories function checks for all categories from db
@@ -132,7 +132,7 @@ def delete():
 def terminal():
     # move this logic to terminal.py when completed
     users_input = request.form.get('add')
-    return terminal_logic.exe_command(users_input)
+    return terminal_logic.check_input(users_input)
 
 
 @app.route('/category/<name>')

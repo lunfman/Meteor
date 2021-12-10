@@ -161,7 +161,7 @@ class manageDeadlines:
         # to get rid of eny spaces and make it lower
         # and checking if by By was typed
         try:
-            clear_input = input.split('By')[1].strip().lower()
+            clear_input = input.strip().lower()
             #self.task = input.split('By')[0].strip().lower()
         except IndexError:
             # By was not typed -> wrong format
