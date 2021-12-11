@@ -123,7 +123,9 @@ class Manager:
         if self.category_name is None:
             return redirect(url_for('home_page'))
         elif response[0] == 'deadlines':
-            return redirect(url_for('show_deadlines', name=self.category_name, order='test'))
+            return redirect(url_for('show_category', name=self.category_name, sort='deadlines'))
+        elif response[0] == 'optional':
+            return redirect(url_for(''))
         else:
             return redirect(url_for('home_page'))
         
