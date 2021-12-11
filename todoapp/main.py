@@ -1,7 +1,7 @@
 import re
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Tasks
-from terminal_test import Manager
+from terminal import Manager
 from datetime import date, datetime, timedelta
 
 app = Flask(__name__)
@@ -204,4 +204,4 @@ def show_deadlines(name):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5001)
