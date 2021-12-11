@@ -2,7 +2,7 @@ import re
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Tasks
 from terminal_test import Manager
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 app = Flask(__name__)
 
@@ -11,22 +11,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 # init terminal class
 terminal_logic = Manager(db)
-
-def get_categories():
-    # get_categories function checks for all categories from db
-    # returns a list witch contains unique categories
-    categories = []
-    try:
-        for category in db.session.query(Tasks).distinct():
-            categories.append(category.category)    
-        unique_dict = set(categories)
-        unique_list = list(unique_dict)
-        return unique_list
-    # except if db do not exists -> first run or deleted
-    except:
-        db.create_all()
-        return []
-
 
 def return_back():
     """
@@ -107,14 +91,43 @@ def date_output(deadline):
 
 @app.route('/')
 def home_page():
-    todo_list = {}
-    # Getting categories names
-    categories = get_categories()
+
+    # categories names
+    categories = (Tasks.query.distinct(Tasks.category).group_by(Tasks.category))
+    # categories data -> key category:name and after {} -> {cat_name:{cat_data:}}
+    cat_data = {}
+   
     for category in categories:
-        # adding to todo_list dict all tasks related to this category
-        # result -> Task : ['Task1', 'Task2']
-        todo_list[category] = Tasks.query.filter_by(category=category).all()
-    return render_template('index.html', todo_list=todo_list, categories=categories)
+        # new_dict for storeing extracted data
+        new_dict = {}
+        by_today =  Tasks.query.filter(Tasks.category == category.category, Tasks.date == date.today()).count()
+        #print(f'By today {by_today}')
+        # dates for tomorrow
+        new_dict['today'] = by_today
+        by_tomorrow = Tasks.query.filter(Tasks.category == category.category, Tasks.date == date.today() + timedelta(days=1)).count()
+        #print(f'By tomorrow {by_tomorrow}')
+         # tasks in category
+        new_dict['tomorrow'] = by_tomorrow
+        # total tasks
+        tasks_number = Tasks.query.filter(Tasks.category == category.category).count()
+        #print(f'Number of tasks {tasks_number}')
+        new_dict['tasks'] = tasks_number
+        # completed tasks in category
+        tasks_comp_number = Tasks.query.filter(Tasks.category == category.category, Tasks.completed == True).count()
+        #print(f'Number of completed tasks {tasks_comp_number}')
+        new_dict['completed'] = tasks_comp_number
+        # expired tasks
+        expired =  Tasks.query.filter(Tasks.category == category.category, Tasks.date != '' ,Tasks.date < date.today()).count()
+        #print(f'expired : {expired}')
+        new_dict['expired'] = expired
+        # not completed and without deadlines
+        no_deadlines = Tasks.query.filter(Tasks.category == category.category, Tasks.date == '', Tasks.completed == False).count()
+        #print(f'Tasks without deadline and not completed: {no_deadlines}')
+        new_dict['ordinary'] = no_deadlines
+        # saveing extracted data to cat_data with category name as key
+        cat_data[category.category] = new_dict
+    #print(cat_data)
+    return render_template('index.html', categories=categories, data=cat_data)
 
 
 @app.route('/completed')

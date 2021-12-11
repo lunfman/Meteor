@@ -27,5 +27,4 @@ def calculate_deadline(deadline):
 
 # def in_command(input):
 #     deadline = date.today() + timedelta(days=input)
-#     print(deadline)
-x
+#     print(deadline

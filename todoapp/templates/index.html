@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>TODO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     
     <link
@@ -28,77 +29,44 @@
     </section>
   
   <!-- list of to dos section -->
-  <section class="todo-list">
+  <section class="card-list">
     <div class="container-fluid">
 
       <div class="row">
-<!--        running for loop to display every category name  from to do list-->
+
         {% for category in categories %}
-          <h2>{{category}}</h2>
-<!--        running another for loop to get every task associated with this category-->
-          {% for todo in todo_list[category]%}
-<!--        checking if task marked as completed or not. If not completed it will be displayed in non completed category-->
-<!--        todo.completed is an orm object of db-->
-            {% if not todo.completed %}
-              <div class="col-10">
-                <p>{{todo.task}}</p>
+        <div class="col-lg-4 col-sm-12 col-md-6">
+          <div class="card text-dark bg-light mb-3">
+            <div class="card-body">
+              <h5 class="card-title">{{category.category}}</h5>
+              {% if data[category.category]['today'] > 0 %}
+              <p class="card-text"><i class="bi bi-brightness-low"></i> {{data[category.category]['today']}} by today</p>
+              {% else %}
+              <p class="card-text"><i class="bi bi-brightness-low"></i> Good Job</p>
+              {% endif %}
+              {% if data[category.category]['tomorrow'] > 0 %}
+              <p class="card-text"><i class="bi bi-calendar"></i> {{data[category.category]['tomorrow']}} for tomorrow</p>
+              {% else %}
+              <p><i class="bi bi-calendar2-x"></i> {{data[category.category]['ordinary']}} optional</p>
+              {% endif %}
+              <div class="row">
+                <div class="col-6">
+                  <p class="card-text"><i class="bi bi-check2-square"></i> {{data[category.category]['completed']}} / {{data[category.category]['tasks']}}</p>
+                </div>
+                <div class="col-6">
+                  <p><i class="bi bi-alarm"> {{data[category.category]['expired']}}</i> </p>
+                </div>
               </div>
-
-<!--              <div class="col-2">-->
-<!--                <p>Today</p>-->
-<!--              </div>-->
-
-        <div class="col-1 icon-links">
-<!--          creating two buttons as link with url unique to task, id value from db.-->
-<!--          tasks id will be received by using args.get in python-->
-                <a class="but-link" href="{{url_for('completed', id=todo.id)}}"><i class="fas fa-check"></i></a>
-              </div>
-          <div class="col-1 icon-links">
-                <a class="but-link" href="{{url_for('delete', id=todo.id)}}"><i class="fas fa-trash-alt"></i></a>
-              </div>
-            {% endif %}
-          {% endfor %}
-        {% endfor %}
+            </div>
+          </div>
         </div>
-
-      </div>
-
-  </section>
-  <!-- completed section -->
-  <section class="completed">
-    <div class="container-fluid">
-      
-      <div class="open-completed">
-        <a data-bs-toggle="collapse" href="#collapseCompleted" role="button" aria-expanded="false" aria-controls="collapseCompleted">
-          Show completed</a>
-      </div>
-      <div class="collapse" id="collapseCompleted">
-      <div class="row">
-<!--        todo make h2 appear only if we have completed task in category !-->
-        {% for category in categories %}
-          <h2>{{category}}</h2>
-          {% for task in todo_list[category] %}
-            {% if task.completed %}
-<!--              {%if loop.index == 1%}-->
-<!--        <h2>{{category}}</h2>-->
-<!--        {% endif %}-->
-              <div class="col-10 completed-text">
-                <p><del>{{task.task}}</del></p>
-              </div>
-              <div class="col-2 icon-links">
-                <a class="but-link" href="{{url_for('undo', id=task.id)}}"><i class="fas fa-undo"></i></a>
-                <a class="but-link" href="{{url_for('delete', id=task.id)}}"><i class="fas fa-trash-alt"></i></a>
-              </div>
-            {% endif %}
-          {% endfor %}
         {% endfor %}
 
-
-        </div>
       </div>
     </div>
-  </section>
 
+
+  </section>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
 </body>
 </html>
