@@ -1,5 +1,4 @@
 from os import name
-from types import new_class
 from terminalobj import Terminal, Command
 from flask import redirect, url_for, request
 from models import Tasks
@@ -28,9 +27,12 @@ class Manager:
             function=self.add_command_logic, order=True, separator= ',')
         self.by_command = Command(name='By', order=True, function=self.by_command_logic)
         self.show_command = Command('Show', self.show_command_logic)
+        self.in_command = Command('In', order=True, function=self.in_command_logic)
             
         self.commands = [self.open_command, self.main_command, self.rename_command,
-         self.create_command, self.add_command, self.by_command, self.show_command]
+            self.create_command, self.add_command, self.by_command, self.show_command,
+            self.in_command]
+        
         self.terminal = Terminal(commands=self.commands)
         self.db = db
         self.date_validator = manageDeadlines()
@@ -127,8 +129,14 @@ class Manager:
         elif response[0] == 'optional':
             return redirect(url_for('show_category', name=self.category_name, sort='optional'))
         elif response[0] == 'list':
-            return redirect(url_for('show_category', name=self.category_name, sort='optional'))
+            return redirect(url_for('show_deadlines', name=self.category_name))
         else:
             return redirect(url_for('home_page'))
         
-        
+    def in_command_logic(self, response):
+        task = self.terminal.before_command_string()
+        deadline = self.date_validator.deadline.in_command(response[0])    
+        new_task = Tasks(task=task, date=deadline, category = self.category_name)
+        self.db.session.add(new_task)
+        self.db.session.commit()
+        return return_back()
