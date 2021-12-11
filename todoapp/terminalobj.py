@@ -17,6 +17,11 @@ class Terminal:
         # commands name from command obj
         self.commands_names = [command.name for command in self.commands]
         # commands_dict stores order true commands because they must be execute after
+        # keep this in mind if you have order True activated for command object
+        # it means that only the last function will be return to the app
+        # so the best solution create a class which is going to store all methods for commands
+        # and if you know that this command can be combined it should create some self.values
+        # insdie the class so the last command will use to perform an action
         self.commands_dict = {}
 
     
@@ -51,14 +56,13 @@ class Terminal:
     
     
     def add_command(self, new):
-        # this method add command in the commands list
+        # this method add command to the commands list
         self.commands.append(new)
         return self
 
 
     def command_extractor(self):
         # split the input data
-        # if multiple same commands was used it will replace it with the latest value!!!
         clean_data = self._input.split()
 
         for index, command in enumerate(self.cur_commands):
@@ -153,6 +157,8 @@ class Terminal:
 
     def dict_extractor(self):
         # iterate through dict and exe function of the comand obj with value
+        # if multiple same commands was used it will replace it with the latest value!!!
+        # because the dict has only one unique key!
         counter = 0
         for key, value in self.commands_dict.items():
             counter += 1
@@ -172,15 +178,19 @@ class Terminal:
 
 
     def update_names(self):
+        # method for updateting names if new command was added to the terminal class
+        # after init
         self.commands_names = [command.name for command in self.commands]
         return self
 
 
     def before_command_string(self):
+        # returns a before command value as a string
         return ' '.join(self.before_command)
 
 
     def check_for_commands(self):
+        # method checks if any command was found
         # method checks if cur_commands empty or not
         if self.cur_commands == []:
             return False
@@ -188,6 +198,18 @@ class Terminal:
              return True
 
 class Command:
+    '''
+    Command Object has next properties
+        - name - the name of the command which is going to be used to interact with the command
+        - function - function which will be execute if command was used
+        - seperator - Optional argument allow to extract multiple values for this command or single
+        - order - False -> terminal will execute the command when it was found no mather 
+        how many commands was provided after only first will be executed ->
+        First command from many!!!
+
+        if true it will execute this commands in order specified in the input and return the last
+        function
+    '''
     # blue print for creating command object
     # not his obj do not have any methods
 
@@ -197,39 +219,3 @@ class Command:
         self.task = function
         # order property specify if it possible to combine commands
         self.order = order
-
-# input = 'Create new Add test1, test2, test3 test'
-# cur_com = ['Create', 'Add']
-# cur_place = [0,2]
-# cur_split = input.split(' ')
-# print(cur_split[1:2])
-# print(' '.join(cur_split[3:]).split(','))
-
-# terminal = Terminal()
-
-# def open_command_fun(input):
-#     print('open', input)
-
-# def rename_command_fun(input):
-#     print('rename values', input)
-
-# def add_command_fun(input):
-#     print('add command', input)
-
-# def create_command_fun(input):
-#     print('command found', input)
-
-# Creating commands
-# open_command = Command('Open', open_command_fun)
-# rename_command = Command(name='Rename', separator='To', function=rename_command_fun)
-# add_command_ = Command(name = 'Add', separator=',', function=add_command_fun, order=True)
-# create_command = Command(name = 'Create', order= True, function= create_command_fun)
-# create_command = Command(name = 'By', order= True, function= create_command_fun)
-
-# terminal.add_command(open_command).add_command(rename_command).add_command(add_command_)
-# terminal.add_command(create_command).update_names()
-# terminal.get_command('Open task').command_extractor()
-# #terminal.get_command('Rename old category To new category').command_extractor()
-# #terminal.get_command('Rename old To new Open task').command_extractor()
-# #terminal.get_command('Create new cat Add task, black friday').command_extractor()
-# terminal.get_command('task By tomorrow').command_extractor()
