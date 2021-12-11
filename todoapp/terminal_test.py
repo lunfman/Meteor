@@ -51,7 +51,7 @@ class Manager:
     def open_command_logic(self, response):
         if len(response) < 1:
             return redirect(url_for('home_page'))
-        return redirect(url_for('show_category', name = ' '.join(response)))
+        return redirect(url_for('show_category', name = ' '.join(response).lower()))
 
     def main_command_logic(self, response):
         return redirect(url_for('home_page'))
@@ -82,7 +82,7 @@ class Manager:
     def create_command_logic(self, response):
         # create category name
         print('category saved')
-        self.category_name = ' '.join(response)
+        self.category_name = ' '.join(response).lower()
         return redirect(url_for('home_page'))
 
 
@@ -96,8 +96,8 @@ class Manager:
         return redirect(url_for('show_category', name=self.category_name))
 
     def rename_command_logic(self, response):
-        old_name = response[0]
-        new_name = response[1]
+        old_name = response[0].lower()
+        new_name = response[1].lower()
         tasks_with_category = Tasks.query.filter_by(category=old_name).all()
         
         # if tasks_with_category = [] redirect to main page
