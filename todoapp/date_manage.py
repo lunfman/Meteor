@@ -85,6 +85,7 @@ class Deadline:
     def by_month(self, input):
         # check current month if december or the current month > than wanted => new year
         # else return value from self.months
+        input = input.lower()
         if input in self.months:
             # if now is december it means next month will be in the new year
             # if now is october and do by february -> new year
@@ -128,11 +129,11 @@ class Deadline:
             return None
 
 
-    def by_month_and_day(self, month, day):
+    def by_month_and_day(self, day, month):
         # this method create date by using month and day
         try:
             # using by month method to get date
-            date = self.by_month(month)
+            date = self.by_month(month.lower())
             # after replace day with wanted one and return
             self.latest = date.replace(day=int(day))
             return self.latest
@@ -184,7 +185,7 @@ class manageDeadlines:
                 # if user type 'By 3 march and' we will get date anyway nice
                 month = clear_input.split()[1]
                 day = clear_input.split()[0]
-                if self.deadline.by_month_and_day(month, day):
+                if self.deadline.by_month_and_day(day, month):
                     return self.deadline.latest
             except:
                 return None
