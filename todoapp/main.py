@@ -1,3 +1,4 @@
+import re
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Tasks
 from terminal_test import Manager
@@ -81,11 +82,28 @@ def calculate_deadline(deadline):
 
     if delta == 1:
         return 'tomorrow'
+    elif delta == 0:
+        return 'today'
     elif delta < 0:
         return 'Failed'
     else:
         return f'{delta} days'
 
+
+def date_output(deadline):
+    deadline = datetime.strptime(deadline, '%Y-%m-%d').date()
+    delta = deadline - date.today()
+
+    delta = int(delta.days)
+
+    if delta == 0:
+        return 'Today'
+    elif delta == 1:
+        return 'Tomorrow'
+    elif delta < 0:
+        return f'{deadline} !!!'
+    else:
+        return deadline
 
 @app.route('/')
 def home_page():
@@ -140,9 +158,13 @@ def show_category(name):
     # looking for tasks in this category
     print(request.args.get('sort'))
     if request.args.get('sort') != None:
-        if request.args.get('sort') == 'deadlines':
+        parameter = request.args.get('sort')
+        if parameter == 'deadlines':
             current_category_todo = (Tasks.query.filter(Tasks.category == name, Tasks.date != '')
                 .order_by(Tasks.date))
+        elif parameter == 'optional':
+            current_category_todo = (Tasks.query.filter(Tasks.category == name, Tasks.date == '')
+                .order_by(Tasks.date))   
     else:
         current_category_todo = (Tasks.query.filter(Tasks.category == name))
     # return page with category name and tasks
@@ -152,17 +174,19 @@ def show_category(name):
         todo_list=current_category_todo, get_deadline= calculate_deadline)
 
 
-# @app.route('/category/<name>/deadlines')
-# def show_deadlines(name):
-#     # looking for tasks in this category
-#     current_category_todo = (Tasks.query.filter(Tasks.category == name, Tasks.date != '')
-#     .order_by(Tasks.date))
-#     print(request.args)
-#     # return page with category name and tasks
-#     # passing calculate_deadline function to get_deadline which will be used
-#     # inside of category.html template for fetching deadlines
-#     return render_template('category.html', category_name=name, 
-#         todo_list=current_category_todo, get_deadline= calculate_deadline)
+@app.route('/category/<name>/list')
+def show_deadlines(name):
+    # looking for tasks in this category and makeing sure it has date
+    current_category_todo = (Tasks.query.filter(Tasks.category == name, Tasks.date != '')
+    .order_by(Tasks.date))
+    # unique_dates = db.session.query(Tasks).distinct(Tasks.category).group_by(Tasks.category)
+    # getting unique dates for this cat from db
+    un_dates = current_category_todo.distinct(Tasks.date).group_by(Tasks.date)
+    # return page with category name and tasks
+    # passing calculate_deadline function to get_deadline which will be used
+    # inside of category.html template for fetching deadlines
+    return render_template('list.html', category_name=name, 
+        todo_list=current_category_todo, get_deadline= date_output, dates = un_dates)
 
 
 

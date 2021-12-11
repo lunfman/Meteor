@@ -125,7 +125,10 @@ class Manager:
         elif response[0] == 'deadlines':
             return redirect(url_for('show_category', name=self.category_name, sort='deadlines'))
         elif response[0] == 'optional':
-            return redirect(url_for(''))
+            return redirect(url_for('show_category', name=self.category_name, sort='optional'))
+        elif response[0] == 'list':
+            return redirect(url_for('show_category', name=self.category_name, sort='optional'))
         else:
             return redirect(url_for('home_page'))
+        
         
