@@ -1,7 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+from todoapp import db
 
 # after create a relation with category!
-db = SQLAlchemy()
 
 class Tasks(db.Model):
     id = db.Column(db.Integer, primary_key=True)

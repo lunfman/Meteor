@@ -1,8 +1,8 @@
 from os import name
-from terminalobj import Terminal, Command
+from .terminalobj import Terminal, Command
 from flask import redirect, url_for, request
-from models import Tasks
-from date_manage import manageDeadlines
+from .models import Tasks
+from .date_manage import manageDeadlines
 def return_back():
     """
     return_back function checks if request made from category tab ('/category/name') or from main menu ('/')
@@ -12,8 +12,8 @@ def return_back():
     """
     if request.args.get('category') is not None:
         # url_for takes name as an argument because show_category route = /category/<name>
-        return redirect(url_for('show_category', name=request.args.get('category')))
-    return redirect(url_for('home_page'))
+        return redirect(url_for('category.show_category', name=request.args.get('category')))
+    return redirect(url_for('dashboard.home_page'))
 
 class Manager:
     def __init__(self, db):
@@ -51,10 +51,10 @@ class Manager:
     def open_command_logic(self, response):
         if len(response) < 1:
             return redirect(url_for('home_page'))
-        return redirect(url_for('show_category', name = ' '.join(response).lower()))
+        return redirect(url_for('category.show_category', name = ' '.join(response).lower()))
 
     def main_command_logic(self, response):
-        return redirect(url_for('home_page'))
+        return redirect(url_for('dashboard.home_page'))
 
     def add_task(self):
         # checking for category name if category is none it means task will be added to Tasks section
@@ -68,7 +68,7 @@ class Manager:
             # save
             self.db.session.commit()
             # redirecting back to the category from which request came
-            return redirect(url_for('show_category', name=self.category_name))
+            return redirect(url_for('category.show_category', name=self.category_name))
 
         else:
         # save task to Tasks category -> Default
@@ -83,7 +83,7 @@ class Manager:
         # create category name
         print('category saved')
         self.category_name = ' '.join(response).lower()
-        return redirect(url_for('home_page'))
+        return redirect(url_for('dashboard.home_page'))
 
 
     def add_command_logic(self, response):
@@ -93,7 +93,7 @@ class Manager:
             self.db.session.add(new_task)
         self.db.session.commit()
         print('tasks saved')
-        return redirect(url_for('show_category', name=self.category_name))
+        return redirect(url_for('category.show_category', name=self.category_name))
 
     def rename_command_logic(self, response):
         old_name = response[0].lower()
@@ -123,15 +123,15 @@ class Manager:
     def show_command_logic(self,response):
         print(response)
         if self.category_name is None:
-            return redirect(url_for('home_page'))
+            return redirect(url_for('dashboard.home_page'))
         elif response[0] == 'deadlines':
-            return redirect(url_for('show_category', name=self.category_name, sort='deadlines'))
+            return redirect(url_for('category.show_category', name=self.category_name, sort='deadlines'))
         elif response[0] == 'optional':
-            return redirect(url_for('show_category', name=self.category_name, sort='optional'))
+            return redirect(url_for('category.show_category', name=self.category_name, sort='optional'))
         elif response[0] == 'list':
             return redirect(url_for('show_deadlines', name=self.category_name))
         else:
-            return redirect(url_for('home_page'))
+            return redirect(url_for('dashboard.home_page'))
         
     def in_command_logic(self, response):
         task = self.terminal.before_command_string()
