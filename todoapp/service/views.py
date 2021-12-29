@@ -1,12 +1,10 @@
 from . import service
 from todoapp import db
-from todoapp.terminal import Manager
 from todoapp.some_func import return_back
 from .logic import is_task_completed
 from todoapp.models import Tasks
 from flask import request
-
-terminal_logic = Manager(db)
+from todoapp.terminal import Terminal
 
 @service.route('/completed')
 def completed():
@@ -38,7 +36,6 @@ def delete():
 
 @service.route('/terminal', methods=['POST'])
 def terminal():
-    # move this logic to terminal.py when completed
     users_input = request.form.get('add')
-    return terminal_logic.check_input(users_input)
+    return Terminal(users_input).check_input()
 
