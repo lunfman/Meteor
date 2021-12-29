@@ -38,7 +38,7 @@ class Deadline:
     '''
 
 
-    def __init__(self):
+    def __init__(self, input):
 
         self.today = date.today()
         self.cur_year = self.today.year
@@ -61,31 +61,35 @@ class Deadline:
        # creating dict from month_list
         self.months = {self.month_list[num]: date(self.cur_year, num + 1, 1)
          for num in range(len(self.month_list))}
+
+        self.input = input
+        self.month = ''
+        self.day = ''
        
 
-    def check_deadline(self, input):
+    def check_deadline(self):
         # this method checks if user typed keywords like 'tomorrow' , 'next week'
         # creating deadline by using dates dict 
-        if input in self.dates:
-            self.latest = self.dates[input]
+        if self.input in self.dates:
+            self.latest = self.dates[self.input]
             return self.latest
         return None
 
 
-    def cur_month_deadline(self, input):
+    def cur_month_deadline(self):
         # method checks if user typed number as an argument
         # return -> Current month year and input as a day
         try:
-            self.latest = self.today.replace(day=int(input))
+            self.latest = self.today.replace(day=int(self.input))
             return self.latest
         except:
             return None
         
 
-    def by_month(self, input):
+    def by_month(self):
         # check current month if december or the current month > than wanted => new year
         # else return value from self.months
-        input = input.lower()
+        input = self.input.lower()
         if input in self.months:
             # if now is december it means next month will be in the new year
             # if now is october and do by february -> new year
@@ -109,14 +113,14 @@ class Deadline:
         return None
 
 
-    def in_command(self, input):
+    def in_command(self):
         # in_command method return a date after calculateing delta of todays and users desired day
         # in_command take one argument -> input which should be a integer or str convertable to integer
         # in command can tak up to 90 if more it will be a mess! In 1000, or in 10000000000 days
         # 90 looks okay because it is really hard to plan task this way
         # Try except to check if input is a digit  and not 'In 90' or some kind of
         try:
-            input = int(input)
+            input = int(self.input)
             if input > 90:
                 return None
             else:
@@ -129,18 +133,22 @@ class Deadline:
             return None
 
 
-    def by_month_and_day(self, day, month):
+    def by_month_and_day(self):
         # this method create date by using month and day
         try:
+            input = self.input.split()
+            self.month = input[1]
+            self.day = input[0]
+            self.input = self.month
             # using by month method to get date
-            date = self.by_month(month.lower())
+            date = self.by_month()
             # after replace day with wanted one and return
-            self.latest = date.replace(day=int(day))
+            self.latest = date.replace(day=int(self.day))
             return self.latest
         except:
             return None
 
-class manageDeadlines:
+class ManageDeadlines(Deadline):
     '''
     This method allows to organize deadline validation in this app
     It init Deadline class and after checks for every possible scenarios of users input
@@ -150,42 +158,39 @@ class manageDeadlines:
     If not none -> return self.deadline.latest
     '''
 
-
-    def __init__(self):
-        self.deadline = Deadline()
-
-
-
-    def check_date(self, input):
+    def check_date(self):
         
         # split users_input by 'By' and selecting dead line value and use strip 
         # to get rid of eny spaces and make it lower
         # and checking if by By was typed
-        try:
-            clear_input = input.strip().lower()
+        #try:
+        self.input = self.input.strip().lower()
             #self.task = input.split('By')[0].strip().lower()
-        except IndexError:
-            # By was not typed -> wrong format
-            return None
+        # except IndexError:
+        #     # By was not typed -> wrong format
+        #     return None
 
         # this section validates dates by using deadline class methods
         # if return is not none going to return latest functions return value
         
-        if self.deadline.check_deadline(clear_input):
-            return self.deadline.latest
-        elif self.deadline.cur_month_deadline(clear_input):
-            return self.deadline.latest
-        elif self.deadline.by_month(clear_input):
-            return self.deadline.latest
+        if self.check_deadline():
+            return self.latest
+        elif self.cur_month_deadline():
+            return self.latest
+        elif self.by_month():
+            return self.latest
         else:
             # here we need to do split again because the last method takes two arguments
             # month after split has index 1
             # day has 0
             try:
                 # if user type 'By 3 march and' we will get date anyway nice
-                month = clear_input.split()[1]
-                day = clear_input.split()[0]
-                if self.deadline.by_month_and_day(day, month):
-                    return self.deadline.latest
+                #self.input = self.month
+                if self.by_month_and_day():
+                    return self.latest
             except:
                 return None
+
+# input = '  3 May'
+# deadline = ManageDeadlines(input)
+# print(deadline.check_date())

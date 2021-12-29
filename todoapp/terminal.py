@@ -1,7 +1,7 @@
 from os import name
 from flask import redirect, url_for, request
 from .models import Tasks
-from .date_manage import manageDeadlines
+from .date_manage import ManageDeadlines
 from .some_func import return_back
 from . import db
 
@@ -20,9 +20,8 @@ class Terminal:
 
         self.input = input
         self.input_split = self.input.split()
-        self.category_name = request.args.get('category')
 
-        self.date_validator = manageDeadlines()
+        self.category_name = request.args.get('category')
     
     def check_input(self):
         for key in self.commands.keys():
@@ -82,7 +81,7 @@ class Terminal:
         task_name = ' '.join(task_name)
         by_name = ' '.join(by_name)
 
-        deadline = self.date_validator.check_date(by_name)
+        deadline = ManageDeadlines.check_date(by_name)
         new_task = Tasks(task=task_name, date=deadline, category = self.category_name)
         db.session.add(new_task)
         db.session.commit()
