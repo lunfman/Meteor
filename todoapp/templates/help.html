@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TODO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.13.0/css/all.css"
+      integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V"
+      crossorigin="anonymous"
+    />
+ 
+  </head>
+  <body>
+    <!-- add item section -->
+    <section class="add-item">
+
+      <div class='container-fluid'>
+      <form method="post" action="{{url_for('service.terminal')}}" autocomplete="off">
+        <div class="input-group-lg">
+          <input type='text' class="form-control todo-input" placeholder="To do..." name="add" autocomplete="off" autofocus>
+        </div>
+      </form>
+      </div>
+    </section>
+  
+  <!-- list of to dos section -->
+  <section class="card-list">
+    <div class="container-fluid">
+        <h2>Commands</h2>
+
+        <h3>Main</h3>
+        <p>Navigate to main menu</p>
+
+
+        <h3>Rename {value1} To {value2}</h3>
+        <p>Allows to rename category to new one</p>
+
+        <h3>Create {cat_name} Add {task1},{task2}</h3>
+        <p>Allows to create category and add tasks by using one command</p>
+
+        <h3>{task} By {tomorrow}</h3>
+        <p>By command allows to add deadlines</p>
+        <p>By </p>
+
+
+      </div>
+    </div>
+
+
+  </section>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
+</body>
+</html>

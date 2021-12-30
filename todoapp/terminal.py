@@ -16,7 +16,8 @@ class Terminal:
             'By': self.do_by_function,
             'Main': self.execute_main_function,
             'Show': self.execute_show_function,
-            'Add': self.execute_add_function}
+            'Add': self.execute_add_function,
+            'Help': self.execute_help_function}
 
         self.input = input
         self.input_split = self.input.split()
@@ -80,8 +81,9 @@ class Terminal:
         by_name = self.input_split[index_of_by+1:]
         task_name = ' '.join(task_name)
         by_name = ' '.join(by_name)
-
-        deadline = ManageDeadlines.check_date(by_name)
+        print('terminal')
+        print(by_name)
+        deadline = ManageDeadlines(by_name).check_date()
         new_task = Tasks(task=task_name, date=deadline, category = self.category_name)
         db.session.add(new_task)
         db.session.commit()
@@ -89,6 +91,10 @@ class Terminal:
 
 
     def add_task(self):
+        if not self.validate_input():
+            if self.category_name is not None:
+                return redirect(url_for('category.show_category', name=self.category_name))
+            return self.execute_main_function() 
         if self.category_name is not None:
             task = Tasks(task=self.input, category=request.args.get('category'))
             db.session.add(task)
@@ -127,3 +133,13 @@ class Terminal:
             db.session.add(new_task)
         db.session.commit()
         return redirect(url_for('category.show_category', name=self.category_name))
+
+    def execute_help_function(self):
+        return redirect(url_for('help.help'))
+
+    
+    def validate_input(self):
+        if self.input.strip() == '':
+            return False
+        return True
+    

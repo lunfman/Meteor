@@ -11,14 +11,3 @@ def return_back():
         # url_for takes name as an argument because show_category route = /category/<name>
         return redirect(url_for('category.show_category', name=request.args.get('category')))
     return redirect(url_for('dashboard.home_page'))
-
-
-
-
-
-
-
-
-
-
-
