@@ -194,7 +194,3 @@ class ManageDeadlines(Deadline):
 # input = '  3 May'
 # deadline = ManageDeadlines(input)
 # deadline.check_date()
-
-input = '        '
-if input.strip() == '':
-    print('invalid')

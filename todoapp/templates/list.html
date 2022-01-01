@@ -19,7 +19,7 @@
     <section class="add-item">
 
       <div class='container-fluid'>
-      <form method="post" action="{{url_for('terminal')}}" autocomplete="off">
+      <form method="post" action="{{url_for('service.terminal')}}" autocomplete="off">
         <div class="input-group-lg">
           <input type='text' class="form-control todo-input" placeholder="To do..." name="add" autocomplete="off" autofocus>
         </div>
@@ -52,10 +52,10 @@
         <div class="col-1 icon-links">
 <!--          creating two buttons as link with url unique to task, id value from db.-->
 <!--          tasks id will be received by using args.get in python-->
-                <a class="but-link" href="{{url_for('completed', id=todo.id)}}"><i class="fas fa-check"></i></a>
+                <a class="but-link" href="{{url_for('service.completed', id=todo.id)}}"><i class="fas fa-check"></i></a>
               </div>
           <div class="col-1 icon-links">
-                <a class="but-link" href="{{url_for('delete', id=todo.id)}}"><i class="fas fa-trash-alt"></i></a>
+                <a class="but-link" href="{{url_for('service.delete', id=todo.id)}}"><i class="fas fa-trash-alt"></i></a>
               </div>
             {% endif %}
           {% endfor %}
@@ -85,8 +85,8 @@
                 <p><del>{{task.task}}</del></p>
               </div>
               <div class="col-2 icon-links">
-                <a class="but-link" href="{{url_for('undo', id=task.id)}}"><i class="fas fa-undo"></i></a>
-                <a class="but-link" href="{{url_for('delete', id=task.id)}}"><i class="fas fa-trash-alt"></i></a>
+                <a class="but-link" href="{{url_for('service.undo', id=task.id)}}"><i class="fas fa-undo"></i></a>
+                <a class="but-link" href="{{url_for('service.delete', id=task.id)}}"><i class="fas fa-trash-alt"></i></a>
               </div>
             {% endif %}
           {% endfor %}

@@ -38,23 +38,23 @@
         <div class="col-xl-4 col-lg-6 col-md-12">
           <div class="card text-dark bg-light mb-3">
             <div class="card-body">
-              <h5 class="card-title">{{category.category}}</h5>
-              {% if data[category.category]['today'] > 0 %}
-              <p class="card-text"><i class="bi bi-brightness-low"></i> {{data[category.category]['today']}} by today</p>
+              <h5 class="card-title">{{category}}</h5>
+              {% if data[category]['today'] > 0 %}
+              <p class="card-text"><i class="bi bi-brightness-low"></i> {{data[category]['today']}} by today</p>
               {% else %}
               <p class="card-text"><i class="bi bi-brightness-low"></i> Good Job</p>
               {% endif %}
-              {% if data[category.category]['tomorrow'] > 0 %}
-              <p class="card-text"><i class="bi bi-calendar"></i> {{data[category.category]['tomorrow']}} for tomorrow</p>
+              {% if data[category]['tomorrow'] > 0 %}
+              <p class="card-text"><i class="bi bi-calendar"></i> {{data[category]['tomorrow']}} for tomorrow</p>
               {% else %}
-              <p><i class="bi bi-calendar2-x"></i> {{data[category.category]['ordinary']}} optional</p>
+              <p><i class="bi bi-calendar2-x"></i> {{data[category]['ordinary']}} optional</p>
               {% endif %}
               <div class="row">
                 <div class="col-6">
-                  <p class="card-text"><i class="bi bi-check2-square"></i> {{data[category.category]['completed']}} / {{data[category.category]['tasks']}}</p>
+                  <p class="card-text"><i class="bi bi-check2-square"></i> {{data[category]['completed']}} / {{data[category]['tasks']}}</p>
                 </div>
                 <div class="col-6">
-                  <p><i class="bi bi-alarm"> {{data[category.category]['expired']}}</i> </p>
+                  <p><i class="bi bi-alarm"> {{data[category]['expired']}}</i> </p>
                 </div>
               </div>
             </div>

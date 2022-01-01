@@ -1,3 +1,0 @@
-# test routes
-
-# test views

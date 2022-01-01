@@ -1,6 +1,6 @@
-from os import name
+from datetime import date
 from flask import redirect, url_for, request
-from .models import Tasks
+from .models import Category, Tasks
 from .date_manage import ManageDeadlines
 from .some_func import return_back
 from . import db
@@ -12,134 +12,228 @@ class Terminal:
         self.commands = {
             'Open': self.execute_open_function,
             'Rename': self.execute_rename_function,
-            'Create': self.create_function,
-            'By': self.do_by_function,
+            'Create': self.execute_create_function,
+            'By': self.execute_by_function,
             'Main': self.execute_main_function,
             'Show': self.execute_show_function,
             'Add': self.execute_add_function,
-            'Help': self.execute_help_function}
+            'Help': self.execute_help_function,
+            'Hide': self.execute_hide_function,
+            'Reveal': self.execute_reveal_function}
 
         self.input = input
         self.input_split = self.input.split()
 
+        # category for redirect and saveing tasks
+        # default category tasks in none by default! if request from dashboard
         self.category_name = request.args.get('category')
-    
+
+
+    def validate_input(self):
+        # check if input has data or not
+        if self.input.strip() == '':
+            return False
+        return True
+
+
     def check_input(self):
         for key in self.commands.keys():
             if key in self.input:
                 return self.commands.get(key)()
         
         return self.add_task()
+    
+
+    def extract_single_command_value(self):
         
+        value = self.input_split[1:]
+        return ' '.join(value)
+
+
+    def extract_middle_value(self):
+        # Comand some values Seperator
+        # seperator value should be defined to use this method
+        self.index_of_seperator = self.input_split.index(self.seperator)
+        value = self.input_split[1:self.index_of_seperator]
+        value = ' '.join(value)
+        return value
+
+    def extract_after_value(self):
+        # Comand some values Seperator after seperator values
+        self.index_of_seperator = self.input_split.index(self.seperator)
+        value = self.input_split[self.index_of_seperator+1:]
+        value = ' '.join(value)
+        return value
+
+    
+    def get_current_category_obj(self):
+        if self.category_name is None:
+            return Category.query.filter_by(name='tasks').first()
+        return Category.query.filter_by(name=self.category_name).first()
         
+
     def execute_main_function(self):
         return redirect(url_for('dashboard.home_page'))
 
 
     def execute_open_function(self):
-        category_name = self.input_split[1:]
-        return redirect(url_for('category.show_category', name = ' '.join(category_name).lower()))
+        category_name = self.extract_single_command_value()
+        return redirect(url_for('category.show_category', name = category_name.lower()))
 
 
     def execute_rename_function(self):
-        if 'To' in self.input_split:
-            index_of_to = self.input_split.index('To')
-            old_category = self.input_split[1:index_of_to]
-            old_category = ' '.join(old_category)
-            new_category = self.input_split[index_of_to+1:]
-            new_category = ' '.join(new_category)
 
-            tasks_with_category = Tasks.query.filter_by(category=old_category).all()
-        
-            # if tasks_with_category = [] redirect to main page
-            if len(tasks_with_category) == 0:
-                # redirects
+        if 'To' in self.input_split:
+            self.seperator = 'To'
+            old_category = self.extract_middle_value()
+            new_category = self.extract_after_value()
+
+            if new_category.strip() == '':
                 return return_back()
 
-            # changing category name to new one for all tasks related to old category
-            for task in tasks_with_category:
-                task.category = new_category
-                db.session.commit()    
+            cur_category = Category.query.filter_by(name=old_category).first()
+
+            if cur_category:
+                cur_category.name = new_category
+                db.session.commit()
+                return return_back()
             return return_back()
+
         else:
-            return_back()   
+            return return_back()   
+    
+    def execute_create_function(self):
+        
+        def create_new_category(category_name):
 
-    def create_function(self):
+            new_category = Category(name=category_name)
+            db.session.add(new_category)
+            db.session.commit()
+
+        def validate_category(category_name):
+
+            new_category = Category.query.filter_by(name=category_name).first()
+            
+            if new_category:
+               return return_back()
+            # add flash messages after
+            create_new_category(category_name)
+            return
+            
         if 'Add' in self.input_split:
-
             index_of_add = self.input_split.index('Add')
             cat_name = self.input_split[1:index_of_add]
-           
-            self.category_name = cat_name
+            self.category_name = ' '.join(cat_name)
+            
+            validate_category(self.category_name)
 
             return self.execute_add_function()
 
+        else:
+            category_name = self.extract_single_command_value()
 
-    def do_by_function(self):
+            validate_category(category_name)
+
+            return return_back()
+
+    # execute_by_function
+    def execute_by_function(self):
+        
+        self.seperator = 'By'
         index_of_by = self.input_split.index('By')
         task_name = self.input_split[:index_of_by]
         by_name = self.input_split[index_of_by+1:]
         task_name = ' '.join(task_name)
         by_name = ' '.join(by_name)
-        print('terminal')
-        print(by_name)
+
+        category = self.get_current_category_obj()    
         deadline = ManageDeadlines(by_name).check_date()
-        new_task = Tasks(task=task_name, date=deadline, category = self.category_name)
-        db.session.add(new_task)
-        db.session.commit()
+        self.task = Tasks(task=task_name, date=deadline, category = category)
+
+        self.save_task()
         return return_back()
 
 
-    def add_task(self):
-        if not self.validate_input():
-            if self.category_name is not None:
-                return redirect(url_for('category.show_category', name=self.category_name))
-            return self.execute_main_function() 
-        if self.category_name is not None:
-            task = Tasks(task=self.input, category=request.args.get('category'))
-            db.session.add(task)
-            db.session.commit()
-            # redirecting back to the category from which request came
-            return redirect(url_for('category.show_category', name=self.category_name))
+    def create_task(self):
 
-        else:
-        # save task to Tasks category -> Default
-            print('else section')
-            task = Tasks(task=self.input)
-            db.session.add(task)
-            db.session.commit()
-            return self.execute_main_function()  
+        self.category = self.get_current_category_obj()
+        self.task = Tasks(task=self.input, category=self.category)
+        return
+
+
+    def save_task(self):
+
+        db.session.add(self.task)
+        db.session.commit()
+        return
+        
+
+    def add_task(self):
+
+        if not self.validate_input():
+            return return_back()
+        
+        self.create_task()
+        self.save_task()
+        return return_back()
+
 
     def execute_show_function(self):
+
         if self.category_name is None:
             return redirect(url_for('dashboard.home_page'))
         elif self.input_split[1] == 'deadlines':
-            return redirect(url_for('category.show_category', name=self.category_name, sort='deadlines'))
+            return redirect(url_for('category.show_category', name=self.category_name,
+                sort='deadlines'))
         elif self.input_split[1] == 'optional':
             return redirect(url_for('category.show_category', name=self.category_name, sort='optional'))
         elif self.input_split[1] == 'list':
-            return redirect(url_for('show_deadlines', name=self.category_name))
+            return redirect(url_for('category.show_deadlines', name=self.category_name))
         else:
             return redirect(url_for('dashboard.home_page'))
     
 
     def execute_add_function(self):
-        add_index = self.input_split.index('Add')
-        tasks = self.input_split[add_index+1:]
-        tasks = " ".join(tasks).split(',')
-        print(self.category_name)
+        self.seperator = 'Add'
+        tasks = self.extract_after_value()
+
+        tasks = tasks.split(',')
+
+        current_category = self.get_current_category_obj()
+
         for task in tasks:
-            new_task = Tasks(task=task, category=self.category_name[0])
+            # create by add_tasks and save method?? or not ..
+            new_task = Tasks(task=task, category=current_category)
             db.session.add(new_task)
         db.session.commit()
         return redirect(url_for('category.show_category', name=self.category_name))
 
+
     def execute_help_function(self):
+
         return redirect(url_for('help.help'))
 
-    
-    def validate_input(self):
-        if self.input.strip() == '':
-            return False
-        return True
+
+    def hide_reveal_functionality(self, boolean):
+
+        category_name = self.extract_single_command_value()
+        category = Category.query.filter_by(name=category_name).first()
+        category.show = boolean
+        db.session.commit()
+        return redirect(url_for('dashboard.home_page'))
+
+
+    def execute_hide_function(self):
+
+        return self.hide_reveal_functionality(False)
+
+
+    def execute_reveal_function(self):
+
+        return self.hide_reveal_functionality(True)
+
+
+    def execute_add_by_function(self):
+
+        pass
     

@@ -1,21 +1,29 @@
+from enum import unique
 from todoapp import db
 import datetime
-# after create a relation with category!
+
 today = datetime.datetime.today()
+
+class Project(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(100), unique = True)
+    categories = db.relationship('Category', backref='project', lazy=True)
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(250), unique=True)
+    show = db.Column(db.Boolean, default=True)
+    tasks = db.relationship('Tasks', backref='category', lazy=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+
+
 class Tasks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(250), nullable=False)
     completed = db.Column(db.Boolean, default=False, nullable=False)
-    category = db.Column(db.String, nullable=False, default='tasks')
     date = db.Column(db.String, default='')
     add_date = db.Column(db.DateTime, default=today, nullable =False)
-    start = db.Column(db.DateTime)
-    completed = db.Column(db.DateTime)
-
-# category show/hide
-# create relation
-
-# class Category(db.Model):
-#     id = db.Column(db.Integer, primary_key = True)
-#     name = db.Column(db.String(250, nullable=False))
-#     show = db.Column(db.Boolean, default=True)
+    start_date = db.Column(db.DateTime)
+    completed_date = db.Column(db.DateTime)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))

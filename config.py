@@ -5,6 +5,7 @@ class Config:
 
 class TestConfig(Config):
     TESTING = True
+    SQLALCHEMY_DATABASE_URI="sqlite:///test.db"
 
 class DevelopmentConfig(Config):
     DEBUG = True
