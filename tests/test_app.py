@@ -133,7 +133,25 @@ class AppTestCase(unittest.TestCase):
 
             response = client.get('/')
             self.assertTrue(b'0 / 2' in response.data)
+        
+        with self.client as client:
+            response = client.post('/terminal',
+                data=dict(add='Add task11, task22, tasko tasko1'),
+                query_string=dict(category='test'),
+                follow_redirects=True)
+            self.assertTrue(b'task11' in response.data)
+            self.assertTrue(b'task22', response.data)
+            self.assertTrue(b'tasko tasko1', response.data)
+            self.assertTrue(b'Add task11' not in response.data)
 
+
+        with self.client as client:
+            response = client.post('/terminal',
+                data=dict(add='Add task11, task22, task2, task3 By tomorrow'),
+                query_string=dict(category='test'),
+                follow_redirects=True)
+            print(response.data.count(b'tomorrow'))
+            self.assertTrue(4 <= response.data.count(b'tomorrow'))
 
     def test_terminal_by_command(self):
         # with redirect to main
@@ -161,11 +179,15 @@ class AppTestCase(unittest.TestCase):
         self.assertTrue(b'test5' in response.data)
         # Create new category and add data  by date
 
-        # response = self.terminal_req('Create new category me4 Add test1, test2 By tomorrow')
-        # self.assertTrue(b'test1' in response.data)
-        # self.assertTrue(b'test2' in response.data)
-        # self.assertTrue(b'tomorrow' in response.data)
-        # test also how many tomorrow
+        response = self.terminal_req('Create new category me4 Add test1, test2, test3 By tomorrow')
+        self.assertTrue(b'test1' in response.data)
+        self.assertTrue(b'test2' in response.data)
+        self.assertTrue(b'Add test1' not in response.data)
+        self.assertTrue(b'new category me4' in response.data)
+        self.assertTrue(b'test3 By tomorrow' not in response.data)
+
+        # amount of task should be 3
+        self.assertTrue(3 == response.data.count(b'tomorrow'))
 
 
     def test_terminal_hide_reveal_commands(self):

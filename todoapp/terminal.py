@@ -1,4 +1,5 @@
 from datetime import date
+from sys import path
 from flask import redirect, url_for, request
 from .models import Category, Tasks
 from .date_manage import ManageDeadlines
@@ -8,21 +9,26 @@ from . import db
 
 class Terminal:
     def __init__(self, input):
-
+        # Create-Add-BY not By-Add-Create order !!!!
+        # order mothers !
+        # Commands Create category Add tasks By date
+        # Add tasks By date
         self.commands = {
             'Open': self.execute_open_function,
             'Rename': self.execute_rename_function,
             'Create': self.execute_create_function,
-            'By': self.execute_by_function,
             'Main': self.execute_main_function,
             'Show': self.execute_show_function,
             'Add': self.execute_add_function,
+            'By': self.execute_by_function,
             'Help': self.execute_help_function,
             'Hide': self.execute_hide_function,
             'Reveal': self.execute_reveal_function}
 
         self.input = input
         self.input_split = self.input.split()
+
+        self.seperator = ''
 
         # category for redirect and saveing tasks
         # default category tasks in none by default! if request from dashboard
@@ -45,13 +51,13 @@ class Terminal:
     
 
     def extract_single_command_value(self):
-        
+        # Comand .......
         value = self.input_split[1:]
         return ' '.join(value)
 
 
     def extract_middle_value(self):
-        # Comand some values Seperator
+        # Add ..middlevalue.. By...
         # seperator value should be defined to use this method
         self.index_of_seperator = self.input_split.index(self.seperator)
         value = self.input_split[1:self.index_of_seperator]
@@ -59,6 +65,7 @@ class Terminal:
         return value
 
     def extract_after_value(self):
+        # Comand .... Command 2 ....after value....
         # Comand some values Seperator after seperator values
         self.index_of_seperator = self.input_split.index(self.seperator)
         value = self.input_split[self.index_of_seperator+1:]
@@ -121,11 +128,16 @@ class Terminal:
             return
             
         if 'Add' in self.input_split:
-            index_of_add = self.input_split.index('Add')
-            cat_name = self.input_split[1:index_of_add]
-            self.category_name = ' '.join(cat_name)
+            self.seperator = 'Add'
+            # index_of_add = self.input_split.index('Add')
+            # cat_name = self.input_split[1:index_of_add]
+            self.category_name = self.extract_middle_value()
             
             validate_category(self.category_name)
+
+            # add self seperator so the execute_add_functions knows
+            #  it comes from Create
+            
 
             return self.execute_add_function()
 
@@ -139,7 +151,6 @@ class Terminal:
     # execute_by_function
     def execute_by_function(self):
         
-        self.seperator = 'By'
         index_of_by = self.input_split.index('By')
         task_name = self.input_split[:index_of_by]
         by_name = self.input_split[index_of_by+1:]
@@ -193,18 +204,52 @@ class Terminal:
             return redirect(url_for('dashboard.home_page'))
     
 
-    def execute_add_function(self):
-        self.seperator = 'Add'
-        tasks = self.extract_after_value()
+    def find_tasks(self):
+       # if self.seperator Add was used in create category
+        # Create category name Add .....
+        if self.seperator == 'Add':
+            if 'By' in self.input_split:
+                # Create .... Add... By..
+                # index of add was used before so it saved
+                add_index = self.index_of_seperator
+                by_index = self.input_split.index('By')
+                tasks = self.input_split[add_index+1:by_index]
+                tasks = ' '.join(tasks)
+                return tasks
+            # Create....Ad...
+            else:
+                return self.extract_after_value()
 
-        tasks = tasks.split(',')
+        elif 'By' in self.input_split:
+            self.seperator = 'By'
+            # Add ..... By ...
+            return self.extract_middle_value()
+
+        else:
+            # Add ......
+            return self.extract_single_command_value()
+
+    def execute_add_function(self):
+
+        tasks = self.find_tasks().split(',')
 
         current_category = self.get_current_category_obj()
 
-        for task in tasks:
-            # create by add_tasks and save method?? or not ..
-            new_task = Tasks(task=task, category=current_category)
-            db.session.add(new_task)
+        if 'By' in self.input_split:
+            self.seperator = 'By'
+            by_name = self.extract_after_value()
+            deadline = ManageDeadlines(by_name).check_date()
+
+            for task in tasks:
+                # create by add_tasks and save method?? or not ..
+                new_task = Tasks(task=task, category=current_category, date=deadline)
+                db.session.add(new_task)
+        else:
+            for task in tasks:
+                # create by add_tasks and save method?? or not ..
+                new_task = Tasks(task=task, category=current_category)
+                db.session.add(new_task)
+        
         db.session.commit()
         return redirect(url_for('category.show_category', name=self.category_name))
 
@@ -231,9 +276,3 @@ class Terminal:
     def execute_reveal_function(self):
 
         return self.hide_reveal_functionality(True)
-
-
-    def execute_add_by_function(self):
-
-        pass
-    
