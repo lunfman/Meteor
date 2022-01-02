@@ -1,5 +1,4 @@
 from datetime import date
-from sys import path
 from flask import redirect, url_for, request
 from .models import Category, Tasks
 from .date_manage import ManageDeadlines
@@ -23,7 +22,9 @@ class Terminal:
             'By': self.execute_by_function,
             'Help': self.execute_help_function,
             'Hide': self.execute_hide_function,
-            'Reveal': self.execute_reveal_function}
+            'Reveal': self.execute_reveal_function,
+            'Delete': self.execute_delete_category_function,
+            'Migrate': self.execute_migrate_function}
 
         self.input = input
         self.input_split = self.input.split()
@@ -41,7 +42,7 @@ class Terminal:
             return False
         return True
 
-
+# execute_command
     def check_input(self):
         for key in self.commands.keys():
             if key in self.input:
@@ -276,3 +277,42 @@ class Terminal:
     def execute_reveal_function(self):
 
         return self.hide_reveal_functionality(True)
+
+
+    def execute_delete_category_function(self):
+        # can not delete not empty category!
+        # delete something -> extract_first_single command value
+        category_name = self.extract_single_command_value()
+        category = Category.query.filter_by(name=category_name).first()
+        
+        # if category do not exists return back
+        if not category:
+            return return_back()
+
+
+        if len(category.tasks) > 0:
+            # check if all task completed
+            unfinished_tasks = Tasks.query.filter(Tasks.category_id == category.id,
+                Tasks.completed == False).first()
+
+            if not unfinished_tasks:
+                print('delete category')
+                db.session.delete(category)
+                db.session.commit()
+                return self.execute_main_function()
+            else:
+                print('send warning')
+                return return_back()
+        
+        db.session.delete(category)
+        db.session.commit()
+        return self.execute_main_function()
+
+    
+    def execute_migrate_function(self):
+        pass
+        # before user should migrate all tasks or complete them!
+
+
+# class Command:
+#     pass
