@@ -310,8 +310,24 @@ class Terminal:
 
     
     def execute_migrate_function(self):
-        pass
-        # before user should migrate all tasks or complete them!
+        # migrate to category
+        # Migrate category 1 To category 2
+        # or Migrate category 1 -> to tasks
+        self.seperator = 'To'
+        category_1 = self.extract_middle_value()
+        category_2 = self.extract_after_value()
+
+        # just change category name to another?
+        cat_1_obj = Category.query.filter_by(name=category_1).first()
+        cat_2_obj = Category.query.filter_by(name=category_2).first()
+        #cur_category.tasks()
+        tasks =  cat_1_obj.tasks
+        print(tasks)
+        for task in tasks:
+            task.category_id = cat_2_obj.id
+            db.session.commit()
+        
+        return return_back()
 
 
 # class Command:

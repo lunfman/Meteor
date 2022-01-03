@@ -244,6 +244,8 @@ class AppTestCase(unittest.TestCase):
         response = self.terminal_req('Open tasks task1 task2')
         self.assertTrue(b'tasks task1 task2' in response.data)
 
+
+
     def test_delete_command(self):
         response = self.terminal_req('Create new one')
         self.assertTrue(b'new one' in response.data)
@@ -256,6 +258,18 @@ class AppTestCase(unittest.TestCase):
         response = self.terminal_req(b'Delete new one')
         self.assertTrue(b'new one' not in response.data)
         self.assertTrue(b'test' in response.data)
+
+    def test_migrate_command(self):
+        response = self.terminal_req('Delete test')
+        self.assertTrue(b'test' in response.data)
+
+        response = self.terminal_req('Migrate test To tasks')
+        response = self.terminal_req('Delete test')
+
+        self.assertTrue(b'test' not in response.data)
+
+
+
 
 
 if __name__ == '__main__':
