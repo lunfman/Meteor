@@ -1,5 +1,5 @@
 from flask import request, redirect, url_for
-
+# TODO rename some_func to routes or something.
 def return_back():
     """
     return_back function checks if request made from category tab ('/category/name') or from main menu ('/')

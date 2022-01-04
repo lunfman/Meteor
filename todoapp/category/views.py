@@ -1,3 +1,5 @@
+from flask.helpers import url_for
+from werkzeug.utils import redirect
 from . import category
 from flask import request, render_template
 from todoapp.models import Tasks, Category
@@ -8,6 +10,8 @@ from todoapp import db
 def show_category(name):
     current_category = Category.query.filter_by(name=name).first()
     if current_category is None:
+        #return redirect(url_for('dashboard.home_page'))
+        # it is bad that on open create category! remove this after
         new_category = Category(name=name)
         db.session.add(new_category)
         db.session.commit()

@@ -238,6 +238,8 @@ class AppTestCase(unittest.TestCase):
             self.assertTrue(b'tomorrow')
 
     def test_terminal_open_command(self):
+        # if category do not exists redirect to main page
+        # if exists go to the page
         response = self.terminal_req('Open tasks 25')
         self.assertTrue(b'tasks 25' in response.data)
 

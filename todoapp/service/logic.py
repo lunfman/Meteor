@@ -2,6 +2,7 @@ from flask import request
 from todoapp import db
 from todoapp.models import Tasks
 
+# TODO refactor this function do not like that it takes boolean as an argument
 def is_task_completed(boolean):
 
     # function takes boolean as argument
