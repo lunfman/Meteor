@@ -1,22 +1,29 @@
 from flask import request
-from todoapp import db
-from todoapp.models import Tasks
+from todoapp.db_actions import DbActions
 
-# TODO refactor this function do not like that it takes boolean as an argument
-def is_task_completed(boolean):
+# undo_task and complete_task almost identical code.
+# But i am not going to create function for them which 
+# takes boolean as an argument!
 
-    # function takes boolean as argument
-    # function used in completed and undo section
-    
-    # getting task id from id arg -> id arg comes from template check 
-    # return_back function for more info
+def undo_task():
+    task_obj = get_task_obj()
+    task_obj.completed = False
+    DbActions.save()
+    return
+
+def complete_task():
+    task_obj = get_task_obj()
+    task_obj.completed = True
+    DbActions.save()
+    return
+
+
+def get_task_obj():
     task_id = request.args.get('id')
-    
-    # looking for the task in db by id
-    completed_task = Tasks.query.get(task_id)
-    
-    # changing tasks completed to true
-    completed_task.completed = boolean
-    
-    # saving
-    db.session.commit()
+    task_obj = DbActions.get_task_by_id(task_id)
+    return task_obj
+
+def delete_task():
+    task_obj = get_task_obj()
+    DbActions.delete_obj(task_obj)
+    return    

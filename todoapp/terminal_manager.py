@@ -1,7 +1,8 @@
 from .terminal import Terminal
 from . import commands
 from flask import request
-from .some_func import return_back 
+from .some_func import return_back
+from .db_actions import DbActions
 
 def terminal_manager(input):
     terminal = Terminal(input)
@@ -21,7 +22,8 @@ def terminal_manager(input):
     run = terminal.execute_command()
     if run == 'command not found':
         category_name = request.args.get('category')
-        commands.AddTask.save(input, category_name)
+        # commands.AddTask(input, category_name)
+        DbActions.create_task(input, category_name)
         return return_back()
     elif run == 'not valid input':
         return return_back()

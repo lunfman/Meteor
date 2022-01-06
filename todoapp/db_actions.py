@@ -1,3 +1,4 @@
+import re
 from . import db
 from .models import Category, Tasks
 from datetime import date, timedelta
@@ -26,35 +27,60 @@ class DbActions:
             Tasks.completed == False).first()
         return unfinished_category_task
     
+
     def get_task_by_id(task_id):
         return Tasks.query.get(task_id)
 
-    
 
+    def get_category_tasks_deadlines(cat_id):
+        tasks = Tasks.query.filter(Tasks.category_id == cat_id, Tasks.date != '')
+        return tasks
 
-         
+    def get_category_tasks_deadlines_unique(cat_id):
+        pass
+
+    def get_category_optional_tasks(cat_id):
+        tasks = Tasks.query.filter(Tasks.category_id == cat_id, Tasks.date == '')
+        return tasks
+
+    def get_all_category_tasks(category_obj):
+        return category_obj.tasks
+
 # Actions
 
-    def create_task(name, category):
+    def create_task(name, category_name):
+        category = DbActions.get_current_category_obj(category_name)
         task = Tasks(task=name, category=category)
-        DbActions.save(task)
+        DbActions.add(task)
         return 
         
-   
-    def save(obj):
+   # add
+    def add(obj):
         db.session.add(obj)
         db.session.commit()
         return
 
+    
+    def save():
+        db.session.commit()
+        return
+
+
     def delete_obj(obj):
         db.session.delete(obj)
         db.session.commit()          
+        return
+
 
     def create_category(category_name):
         new_category = Category(name=category_name)
-        DbActions.save(new_category)
+        DbActions.add(new_category)
         return
+    def get_ordered_deadlines_by_date():
+        pass
 
+    def get_ordered_optionals_by_date():
+        pass
 
 
 class DashboardQueries:

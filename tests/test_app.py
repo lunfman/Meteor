@@ -48,7 +48,7 @@ class AppTestCase(unittest.TestCase):
 
         with self.client as client:
             response = client.get('/category/test 1')
-            self.assertTrue(b'test 1' in response.data)
+            self.assertTrue(b'test 1' not in response.data)
 
     # test category delete, complete, undo, delete completed
     def test_category_completed(self):
@@ -241,11 +241,13 @@ class AppTestCase(unittest.TestCase):
         # if category do not exists redirect to main page
         # if exists go to the page
         response = self.terminal_req('Open tasks 25')
-        self.assertTrue(b'tasks 25' in response.data)
+        self.assertTrue(b'tasks 25' not in response.data)
 
         response = self.terminal_req('Open tasks task1 task2')
-        self.assertTrue(b'tasks task1 task2' in response.data)
+        self.assertTrue(b'tasks task1 task2'not in response.data)
 
+        response = self.terminal_req('Open test')
+        self.assertTrue(b'first' in response.data)
 
 
     def test_delete_command(self):

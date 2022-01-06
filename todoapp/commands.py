@@ -174,7 +174,7 @@ class ByCommand(Command):
         category = DbActions.get_current_category_obj(category_name)    
         deadline = ManageDeadlines(self.by_name).check_date()
         task = Tasks(task=self.task_name, date=deadline, category = category)
-        DbActions.save(task)
+        DbActions.add(task)
 
         return return_back()
 
@@ -384,11 +384,11 @@ class MigrateCommand(MiddleSeperatorCommand):
         return self.migrate_command()
 
 
-class AddTask:
-    # rename
-    def save(name, category_name):
-        category = DbActions.get_current_category_obj(category_name)
-        DbActions.create_task(name, category) 
+# class AddTask:
+#     # rename
+#     def save(name, category_name):
+#         category = DbActions.get_current_category_obj(category_name)
+#         DbActions.create_task(name, category) 
 
 
 class LatestChanges:

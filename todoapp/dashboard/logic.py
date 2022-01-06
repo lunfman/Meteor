@@ -1,4 +1,5 @@
 from todoapp.db_actions import DbActions, DashboardQueries
+from flask import render_template
 
 def get_categories_objs():
     categories = DbActions.get_all_categories_with_show()
@@ -41,3 +42,9 @@ def create_categories_data():
 
     return cat_data
 
+# nameing!
+def return_dashboard_logic():
+    categories_names = get_categories()
+    cat_data = create_categories_data()
+  
+    return render_template('index.html', categories=categories_names, data=cat_data)  

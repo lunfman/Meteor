@@ -1,36 +1,25 @@
 from . import service
-from todoapp import db
 from todoapp.some_func import return_back
-from .logic import is_task_completed
-from todoapp.models import Tasks
+from .logic import  delete_task, undo_task, complete_task
 from flask import request
 from todoapp.terminal_manager import terminal_manager
 
+
 @service.route('/completed')
 def completed():
-    is_task_completed(True)
+    complete_task()
     return return_back()
+
 
 @service.route('/undo')
 def undo():
-    is_task_completed(False)
+    undo_task()
     return return_back()
 
 
 @service.route('/delete')
 def delete():
-
-    # getting id from jinja template
-    task_id = request.args.get('id')
-    
-    # looking for the task by id
-    task_to_delete = Tasks.query.get(task_id)
-    
-    # deleting task from db
-    db.session.delete(task_to_delete)
-    
-    # saving
-    db.session.commit()
+    delete_task()
     return return_back()
 
 
@@ -38,4 +27,3 @@ def delete():
 def terminal():
     users_input = request.form.get('add')
     return terminal_manager(users_input)
-
