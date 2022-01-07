@@ -1,3 +1,5 @@
+from datetime import datetime, date
+
 class ExtractCommand:
 
 
@@ -26,3 +28,38 @@ class ExtractCommand:
         value = ' '.join(value)
         return value
 
+# utility
+class DateOutput:
+    def __init__(self, deadline_date):
+        self.deadline = datetime.strptime(deadline_date, '%Y-%m-%d').date()
+        delta = self.deadline - date.today()
+        self.delta = int(delta.days)
+
+
+    def base_modify_date(self):
+        if self.delta == 1:
+            return 'tomorrow'
+        elif self.delta == 0:
+            return 'today'
+
+
+    def modify_deadline_date(self):
+        base = self.base_modify_date()
+        if base:
+            return base
+        
+        if self.delta < 0:
+            return f'{self.deadline} !!!'
+        else:
+            return self.deadline
+
+
+    def modify_category_date(self):
+        base = self.base_modify_date()
+        if base:
+            return base
+
+        if self.delta < 0:
+            return 'Failed'
+        else:
+            return f'{self.delta} days'    

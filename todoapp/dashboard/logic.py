@@ -42,8 +42,8 @@ def create_categories_data():
 
     return cat_data
 
-# nameing!
-def return_dashboard_logic():
+
+def make_dashboard_logic():
     categories_names = get_categories()
     cat_data = create_categories_data()
   

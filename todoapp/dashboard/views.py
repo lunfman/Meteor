@@ -1,6 +1,6 @@
 from . import dashboard
-from .logic import return_dashboard_logic
+from .logic import make_dashboard_logic
 
 @dashboard.route('/')
 def home_page():
-    return return_dashboard_logic()
+    return make_dashboard_logic()
