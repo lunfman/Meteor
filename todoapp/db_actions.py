@@ -10,6 +10,8 @@ class DbActions:
     def get_current_category_obj(category_name):
         if category_name is None:
             return DbActions.get_category('tasks')
+        elif str(category_name).strip() == '':
+            return DbActions.get_category('tasks')
         return DbActions.get_category(category_name)
     
 

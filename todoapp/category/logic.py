@@ -17,6 +17,7 @@ def get_category_date(deadline):
 
 
 def get_tasks(category):
+    print(request.args.get('sort'))
     if request.args.get('sort') != None:
         sort_value = request.args.get('sort')
         if sort_value == 'deadlines':

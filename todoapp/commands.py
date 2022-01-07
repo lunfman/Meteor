@@ -186,7 +186,8 @@ class ByCommand(Command):
 class ShowCommand(Command):
     name = 'Show'
     def __init__(self, input):
-        super().__init__(input)    
+        super().__init__(input)
+
 
     def show_command(self):
 
@@ -259,7 +260,7 @@ class AddCommand(Command):
                 db.session.add(new_task)
         
         db.session.commit()
-        return redirect(url_for('category.show_category', name=self.category_name))
+        return redirect(url_for('category.show_category', name=current_category.name))
 
     def run_command(self):
         print('running add command')

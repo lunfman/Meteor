@@ -18,11 +18,9 @@ def terminal_manager(input):
     terminal.add_command(commands.HideCommand)
     terminal.add_command(commands.DeleteCommand)
     terminal.add_command(commands.MigrateCommand)
-
     run = terminal.execute_command()
     if run == 'command not found':
         category_name = request.args.get('category')
-        # commands.AddTask(input, category_name)
         DbActions.create_task(input, category_name)
         return return_back()
     elif run == 'not valid input':

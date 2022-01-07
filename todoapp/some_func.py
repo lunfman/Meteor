@@ -7,7 +7,9 @@ def return_back():
     category value located in templates/category.html
     href={{url_for('completed', id=todo.id, category=category_name)}}
     """
-    if request.args.get('category') is not None:
+    category = request.args.get('category')
+    if category is not None and str(category).strip() != '':
+        print('redirect to category')
         # url_for takes name as an argument because show_category route = /category/<name>
         return redirect(url_for('category.show_category', name=request.args.get('category')))
     return redirect(url_for('dashboard.home_page'))
