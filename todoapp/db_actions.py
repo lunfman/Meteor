@@ -132,3 +132,11 @@ class DashboardQueries:
         optional_sum = query.filter\
             (Tasks.date == '', Tasks.completed == False).count()
         return optional_sum
+
+
+def create_db():
+    db.create_all()
+    db.session.commit()
+    tasks_category = Category(name = 'tasks')
+    db.session.add(tasks_category)
+    db.session.commit()

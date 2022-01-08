@@ -1,9 +1,15 @@
-from todoapp.db_actions import DbActions, DashboardQueries
+from todoapp.db_actions import DbActions, DashboardQueries, create_db
 from flask import render_template
 
 def get_categories_objs():
-    categories = DbActions.get_all_categories_with_show()
-    return categories
+    # first intereaction with db if db do not exists create it
+    try:
+        categories = DbActions.get_all_categories_with_show()
+        return categories
+    except:
+        create_db()
+        categories = DbActions.get_all_categories_with_show()
+        return categories
 
 def get_categories():
     categories = get_categories_objs()
