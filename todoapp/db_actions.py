@@ -121,7 +121,10 @@ class DashboardQueries:
     def count_category_expired_tasks(self):
         query = Tasks.query.filter(Tasks.category_id == self.cat_id)
         expired_sum = query.filter\
-            (Tasks.date != '' ,Tasks.date < date.today()).count()
+            (Tasks.date != '' ,\
+            Tasks.date < date.today(),\
+            Tasks.completed == False).\
+            count()
         return expired_sum
 
     def count_category_optional_tasks(self):
