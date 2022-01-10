@@ -4,23 +4,348 @@
   <!-- list of to dos section -->
   <section class="card-list">
     <div class="container-fluid">
-        <h2>Commands</h2>
 
-        <h3>Main</h3>
-        <p>Navigate to main menu</p>
+      <h2>Commands</h2>
+
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              How to return to dashboard?
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <code>Main</code>
+              <br>Return back to dashboard.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              How to add task?
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <strong>Option 1: Add task from dashboard</strong><br>
+              If you add task from dashboard it will be automaticity saved to <b>tasks</b> category.
+              <br><code>Task name</code><br>
+              new task will be saved to tasks category<br>
+
+              <strong>Option 2: Add task to unique category</strong><br>
+              If you want to add task to unique category you have to open category and simply write the name of the tasks.
+              
+              
+              <br>1. <code>Open category</code><br>
+              2. <code>Task name</code>
+
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCreate" aria-expanded="false" aria-controls="collapseThree">
+              How to create category?
+            </button>
+          </h2>
+          <div id="collapseCreate" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              To create the category just type next:<br>
+              <code>Create category name</code><br>
+              After category will be created and appear on dashboard
 
 
-        <h3>Rename {value1} To {value2}</h3>
-        <p>Allows to rename category to new one</p>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              How to open / navigate to category?
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Open command allows to open category<br>
+              <code>Open category name</code> 
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRename" aria-expanded="false" aria-controls="collapseThree">
+              How to rename category?
+            </button>
+          </h2>
+          <div id="collapseRename" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              * <code>To</code> should be with first uppercase letter<br>
+              * Rename will not work if <code>To</code> was not presented in the line.<br>
+              <strong>Syntax</strong><br>
+              <code>Rename old category name To new category name</code><br>
+              <strong>Example</strong><br>
+              1. <code>Rename cats To my cats</code><br>
+              2. <code>Rename long name To new long name</code>
 
-        <h3>Create {cat_name} Add {task1},{task2}</h3>
-        <p>Allows to create category and add tasks by using one command</p>
+            </div>
+          </div>
+        </div>
 
-        <h3>{task} By {tomorrow}</h3>
-        <p>By command allows to add deadlines</p>
-        <p>By </p>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCreateAdd" aria-expanded="false" aria-controls="collapseThree">
+              How to create category and add many tasks at once?
+            </button>
+          </h2>
+          <div id="collapseCreateAdd" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <code>Create category name Add task1, task2, long task3</code><br>
+              <strong>Result</strong><br>
+              Category with "category name" Created <br>
+              Category has next tasks: task1, task2, long task3<br>
+
+              * Can be combined with Deadlines<br>
+              <code>Create category name Add task1, task2 By date</code>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDelete" aria-expanded="false" aria-controls="collapseThree">
+              How to delete category?
+            </button>
+          </h2>
+          <div id="collapseDelete" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Nb! Only empty category can be deleted!<br>
+              <code>Delete category name</code><br>
+              <strong>Result</strong><br>
+              Category with "category name" Deleted If it was empty <br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMigrate" aria-expanded="false" aria-controls="collapseThree">
+              How to transfer all category tasks to another?
+            </button>
+          </h2>
+          <div id="collapseMigrate" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <code>Migrate category name1 To category name2</code><br>
+              <strong>Result</strong><br>
+              All tasks from category name1 moved to category name2<br>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+        <h2>Deadlines</h2>
+        <div class="accordion" id="accordionExample1">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIn" aria-expanded="false" aria-controls="collapseOne">
+              How to add deadline by using In?
+            </button>
+          </h2>
+          <div id="collapseIn" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <strong>In how many days task should be completed</strong><br>
+              Task name + <code>In</code> (number)<br>
+              number - how many days till deadline<br>
+              Nb! Max value of In number is 90!<br>
+              <strong>Examples:</strong><br>
+              <code>Task1 In 5</code><br>
+              <strong>Result</strong><br>
+              Task1 should be done in 5 days from today
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseByMonth" aria-expanded="false" aria-controls="collapseThree">
+              How to add task by month?
+            </button>
+          </h2>
+          <div id="collapseByMonth" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Task1 By (january-december)</code><br>
+              month - by which month<br><br>
+              <strong>Examples:</strong><br>
+              <code>Task1 By april</code><br><br>
+              <strong>Result</strong><br>
+              Task1 should be done by 1 april<br><br>
+              <code>Task1 By december</code><br><br>
+              Task1 should be done by 1 december<br><br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseByCurrentDate" aria-expanded="false" aria-controls="collapseThree">
+              How to add task by currents month date?
+            </button>
+          </h2>
+          <div id="collapseByCurrentDate" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Task name By (1-30)</code><br>
+              number - date of the current month<br><br>
+              <strong>Examples:</strong><br>
+              <code>Task1 By 5</code><br><br>
+              <strong>Result</strong><br>
+              Task1 should be done by currents month day 5<br>
+              For example if now is september and I use <code>Task1 By 5</code> =>(<b>5 september</b>)<br><br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseByKey" aria-expanded="false" aria-controls="collapseThree">
+              How to add task by keyword?
+            </button>
+          </h2>
+          <div id="collapseByKey" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Task name By keyword</code><br>
+              Keywords: <i>'tomorrow', 'next week', 'next month'</i><br>
+              <b>Examples</b><br>
+              <code>task By tomorrow</code><br>
+              <code>task By next week </code><br>
+              <code>task By next month</code><br><br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseByDayMonth" aria-expanded="false" aria-controls="collapseThree">
+              How to add task by month and date?
+            </button>
+          </h2>
+          <div id="collapseByDayMonth" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Task name By day(1-30) month(january-december)</code>
+              number - date of the month
+              month - by which month
+              <strong>Examples:</strong><br>
+              <code>Task1 By 5 april</code><br><br>
+              <strong>Result</strong><br>
+              Task1 should be done by 5 april<br><br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddManyBy" aria-expanded="false" aria-controls="collapseThree">
+              How to add many task by deadline?
+            </button>
+          </h2>
+          <div id="collapseAddManyBy" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Add task1, task2, long task3 By tomorrow</code><br>
+              <code>Add task1, task2, long task3 By 10</code><br>
+              <code>Add task1, task2, long task3 By january</code><br>
+            </div>
+          </div>
+        </div>
+
+        <h2>Sort</h2>
+        <div class="accordion" id="accordionExample2">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShowDeadlines" aria-expanded="false" aria-controls="collapseOne">
+              How to show tasks only with deadlines?
+            </button>
+          </h2>
+          <div id="collapseShowDeadlines" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Show deadlines</code><br>
+              Nb! Use this command inside of category
+              This command will display only tasks with deadlines.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion" id="accordionExample2">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShowOptional" aria-expanded="false" aria-controls="collapseOne">
+              How to show tasks only without deadlines?
+            </button>
+          </h2>
+          <div id="collapseShowOptional" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample1">
+            <div class="accordion-body">
+              <code>Show optionals</code><br>
+              Nb! Use this command inside of category
+              This command will display only tasks without deadlines.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion" id="accordionExample2">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShowList" aria-expanded="false" aria-controls="collapseOne">
+                How to show tasks in order of deadlines ?
+              </button>
+            </h2>
+            <div id="collapseShowList" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample1">
+              <div class="accordion-body">
+                <code>Show list</code><br>
+                Nb! Use this command inside of category
+                This command will display a list of tasks in descending order with dates.
+              </div>
+            </div>
+          </div>
+
+          <h2>Preferences</h2>
+          <div class="accordion" id="accordionExample3">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHideCategory" aria-expanded="false" aria-controls="collapseOne">
+                How to hide category on Dashboard?
+              </button>
+            </h2>
+            <div id="collapseHideCategory" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample1">
+              <div class="accordion-body">
+                <code>Hide category name</code><br>
+                <strong>Result</strong><br>
+                Category with name 'category name' now is hidden
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion" id="accordionExample3">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRevealCategory" aria-expanded="false" aria-controls="collapseOne">
+                  How to reveal category on Dashboard?
+                </button>
+              </h2>
+              <div id="collapseRevealCategory" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample1">
+                <div class="accordion-body">
+                  <code>Reveal category name</code><br>
+                  <strong>Result</strong><br>
+                  Category with name 'category name' now is visible on the Dashboard.
+                </div>
+              </div>
+            </div>
 
 
+      </div>
+
+      </div>
       </div>
     </div>
 

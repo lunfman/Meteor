@@ -44,7 +44,13 @@ a {
     font-style: deleted;
 }
 
-/* deadline exp */
-.expired{
-    color: red;
-}
+
+/* accordion.. */
+  .accordion-button:not(.collapsed) {
+    color: black  !important;
+    background-color: #e4e4ed !important;
+  }
+  /* .accordion-button:not(.collapsed)::after{
+    background-image: none
+  }
+   */

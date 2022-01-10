@@ -196,7 +196,7 @@ class ShowCommand(Command):
         elif self.input_split[1] == 'deadlines':
             return redirect(url_for('category.show_category', name=self.category_name,
                 sort='deadlines'))
-        elif self.input_split[1] == 'optional':
+        elif self.input_split[1] == 'optionals':
             return redirect(url_for('category.show_category', name=self.category_name, sort='optional'))
         elif self.input_split[1] == 'list':
             return redirect(url_for('category.show_deadlines', name=self.category_name))
