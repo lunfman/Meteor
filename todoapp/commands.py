@@ -123,6 +123,7 @@ class CreateCommand(Command):
         if new_category:
             return True
         # add flash messages after
+        self.category_name = self.category_name.lower()
         DbActions.create_category(self.category_name)
         return False
     
@@ -131,7 +132,6 @@ class CreateCommand(Command):
 
         if 'Add' in self.input_split:
             self.category_name = ExtractCommand.extract_middle_value(self.input, 'Add')
-            
             if self.validate_category():
                 return return_back()
 
