@@ -189,6 +189,12 @@ class AppTestCase(unittest.TestCase):
         # amount of task should be 3
         self.assertTrue(3 == response.data.count(b'tomorrow'))
 
+        # test that lowercase transfer works fine
+        response = self.terminal_req('Create CateGoRYTosToPostO')
+        self.assertTrue(b'CateGoRYTosToPostO' != response.data)
+        self.assertTrue(b'categorytostoposto' in response.data)
+
+
 
     def test_terminal_hide_reveal_commands(self):
         response = self.terminal_req('Hide test')
@@ -219,7 +225,7 @@ class AppTestCase(unittest.TestCase):
         # Show optional
         with self.client as client:
             response = client.post('/terminal',
-                data=dict(add='Show optional'),
+                data=dict(add='Show optionals'),
                 query_string=dict(category='test'),
                 follow_redirects=True)
 
